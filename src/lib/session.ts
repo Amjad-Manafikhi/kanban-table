@@ -35,15 +35,12 @@ export async function decrypt(token: string): Promise<SessionPayload | null> {
 }
 
 // Set the cookie in the response
+type UserRow = { user_id: number };
+
 export async function createSession(res: NextApiResponse, email: string) {
-  
-  
-  const result = await query(
-        'SELECT user_id FROM users WHERE email = ?',
-        [email]
-  );
-  
-  const userId = (result as any)[0]?.user_id; // cast if needed
+  const result = await query<UserRow[]>('SELECT user_id FROM users WHERE email = ?', [email]);
+
+  const userId = result[0]?.user_id;
   if (!userId) throw new Error("User not found");
 
   const expiresAt = Date.now() + 7 * 24 * 60 * 60 * 1000;
@@ -57,13 +54,15 @@ export async function createSession(res: NextApiResponse, email: string) {
     sameSite: 'lax',
   });
 
-  const isLoggedIn =serialize('loggedIn', 'true', {
-        httpOnly: false,
-        path: '/',
-        maxAge: 60 * 60 * 24 * 7,
-      })     
+  const isLoggedIn = serialize('loggedIn', 'true', {
+    httpOnly: false,
+    path: '/',
+    maxAge: 60 * 60 * 24 * 7,
+  });
+
   res.setHeader('Set-Cookie', [cookie, isLoggedIn]);
 }
+
 
 // Delete the cookie
 export function deleteSession(res: NextApiResponse) {
