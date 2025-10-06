@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Company, Task, Task_types } from "@/models/database";
+import { Task, Task_types } from "@/models/database";
 import useFetchUserTasks from "@/hooks/useFetchUserTasks";
 import Layout from "@/components/Layout";
 import KanbanTable, {Reorder} from "../components/KanbanTable"

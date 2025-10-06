@@ -1,11 +1,9 @@
 import { Task } from "@/models/database";
 import { useSortable } from "@dnd-kit/sortable";
 import {CSS} from '@dnd-kit/utilities';
-import { describe } from "node:test";
 import React, { useState } from "react";
 import UpdateText from './UpdateText';
 import { useEditingContext } from "@/contexts/EditingContext";
-import { QueryData } from "./UpdateText";
 import {TextLoading} from "./UpdateText"
 import { GripVertical } from "lucide-react";
 type Props = {

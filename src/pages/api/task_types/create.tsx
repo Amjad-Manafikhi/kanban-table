@@ -1,6 +1,5 @@
 import { query } from '../../../lib/db'; // Adjust path if needed
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Task_types } from '@/models/database'; // Assuming Database.ts contains your types
 import { v4 as uuidv4 } from 'uuid';
 import { decrypt } from '@/lib/session';
 import { parse } from 'cookie';

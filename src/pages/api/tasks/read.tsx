@@ -1,6 +1,6 @@
 import { query } from '../../../lib/db'; // Adjust path if needed
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Task, Task_types } from '@/models/database';
+import { Task } from '@/models/database';
 
 
 export default async function handler(

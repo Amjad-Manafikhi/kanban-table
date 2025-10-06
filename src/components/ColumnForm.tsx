@@ -42,7 +42,6 @@ export default function ColumnForm({idx, refetch, setOpen}:Props){
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ typeName, idx:length }),
         });
-        const result= await response.json();
         setLoading(false);
         if (response.ok) {
             toast.success('Type Added Successfully!')

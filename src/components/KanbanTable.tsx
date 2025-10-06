@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
   DndContext,
-  closestCenter,
   rectIntersection,
   KeyboardSensor,
   PointerSensor,
@@ -22,13 +21,10 @@ import {
 import Column from "./../components/Column";
 import { Task, Task_types } from "@/models/database";
 import { FetchState } from "@/hooks/useFetchUserTasks";
-import Layout from "@/components/Layout";
 import Tools from '../components/Tools';
 import DeleteArea from './../components/DeleteArea';
-import { EditingProvider, useEditingContext } from "@/contexts/EditingContext";
+import { useEditingContext } from "@/contexts/EditingContext";
 import TaskRow from "./TaskRow";
-import { createPortal } from "react-dom";
-const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export type Reorder = {
     id:string;
@@ -66,8 +62,8 @@ export default function KanbanTable({userTasks, userTaskTypes, updateColumns, up
 
 
   
-  const {data:taskTypes, error, loading, reFetch, setState} = userTaskTypes;
-  const {data:tasks, error:tasksError, loading:tasksLoading, reFetch:tasksReFetch, setState:tasksSetState} = userTasks;
+  const {data:taskTypes, loading, reFetch, setState} = userTaskTypes;
+  const {data:tasks, reFetch:tasksReFetch, setState:tasksSetState} = userTasks;
   const [columns, setColumns] = useState<Reorder[]>([]);
   const [rows, setRows] = useState<Reorder[]>([]);
   const [clicking, setClicking] = useState("");

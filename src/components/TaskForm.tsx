@@ -2,7 +2,6 @@ import { FormEvent, useState } from 'react';
 import { useRouter } from "next/router";
 import {toast} from "react-hot-toast"
 import { Task_types } from '@/models/database';
-import { ColumnsMap, useColumnsMap } from '@/hooks/useColumnsMap';
 
 
 type Props={
@@ -30,7 +29,7 @@ export default function Form( {taskTypes, typeIdMap}:Props){
       }
 
       console.log("qwer",typeIdMap)
-      async function handleSubmit(e:  FormEvent<HTMLFormElement>, id?:number){
+      async function handleSubmit(e:  FormEvent<HTMLFormElement>){
           e.preventDefault();
           
           
@@ -71,7 +70,7 @@ export default function Form( {taskTypes, typeIdMap}:Props){
 
     const options = taskTypes?.map((type) => {
         return(
-            <option value={type.type_id} > {type.type_name}</option>
+            <option key={type.type_id} value={type.type_id} > {type.type_name}</option>
         )
     })
 

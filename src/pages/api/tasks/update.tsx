@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { query } from "@/lib/db"; // your mysql2 helper
-import { Task_types } from "@/models/database";
-import { act } from "react";
+
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "PUT") {

@@ -1,6 +1,4 @@
-import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
-import Cookies from "js-cookie";
 
 
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;

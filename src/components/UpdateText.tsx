@@ -1,10 +1,10 @@
 import { useEditingContext } from '@/contexts/EditingContext';
-import React, { useState, useRef, useEffect, ReactNode, SetStateAction, Dispatch } from 'react';
+import React, { useState, useRef, useEffect, ReactNode } from 'react';
 import toast from 'react-hot-toast';
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export type TextLoading = {
-    loading:String;
+    loading:string;
     textValue:string;
 } 
 

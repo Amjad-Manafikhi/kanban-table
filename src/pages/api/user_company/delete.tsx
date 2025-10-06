@@ -5,7 +5,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<{ message: string; result?: unknown; error?: string }>
 ) {
-  const tableName="cases";
   if (req.method === 'DELETE') {
     const { id } = req.body;
     if (!id) {

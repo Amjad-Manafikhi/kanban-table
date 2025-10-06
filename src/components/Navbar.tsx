@@ -3,12 +3,9 @@ import Link from "next/link";
 import  Cookies from 'js-cookie'
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import UpdateText from './UpdateText';
-type Props = {
-    isHomePage?:boolean;
-}
 
-export const Navbar = ({isHomePage}:Props) =>{
+
+export const Navbar = () =>{
     const router= useRouter(); 
     
     

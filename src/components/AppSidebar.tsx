@@ -1,15 +1,5 @@
 import {
   FaBookOpen,       // Course
-  FaUserGraduate,   // Student
-  FaUserInjured,    // Patient
-  FaTooth,          // Toothache
-  FaFolderOpen,     // Case
-  FaMicroscope,     // Diagnostic
-  FaTags,           // Source Type
-  FaFlask,          // Material
-  FaHeartbeat,      // Comorbidity
-  FaClock,          // Session
-  FaUserMd,         // Doctor
   FaUserTie         // Supervisor
 } from "react-icons/fa";
 import { ChevronDown, ChevronUp } from "lucide-react";
@@ -27,7 +17,6 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem
 } from "@/components/ui/sidebar";
-const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 import {
   Collapsible,
@@ -37,7 +26,7 @@ import {
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
-import {useState, useEffect} from "react"
+import {useState} from "react"
 import { Company } from "@/models/database";
 
 type SidebarElement={
@@ -69,7 +58,7 @@ export function AppSidebar( { companies }:Props) {
   const companiesItems = companies!==undefined && companies.map((company:Company)=>{
     const isActive = pathname === `/mycompanies/${company.name}`;
     return(
-      <SidebarMenuSubItem className={cn(
+      <SidebarMenuSubItem key={company.company_id}className={cn(
           "flex items-center gap-2 rounded-md px-2 py-1 transition-colors hover:bg-blue-500 hover:text-white",
           isActive
             ? "bg-blue-500 text-white"

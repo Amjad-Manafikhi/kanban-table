@@ -33,7 +33,7 @@ export default function Layout({ children, setPageCompanies }: LayoutProps) {
       }
     }
     setData();
-  }, []);
+  },);
   if(loading)return <p>Loading...</p>
   return (
     <SidebarProvider>

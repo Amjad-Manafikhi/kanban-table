@@ -1,9 +1,6 @@
 import { query } from '../../../lib/db'; // Adjust path if needed
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Task } from '@/models/database'; // Assuming Database.ts contains your types
-import { parse } from "cookie";
-import { decrypt } from "@/lib/session";
-import { v4 as uuidv4 } from 'uuid';
+
 
 
 export default async function handler(
@@ -20,7 +17,6 @@ export default async function handler(
     ) {
       return res.status(400).json({ message: 'Missing company values' });
     }
-    const date = new Date
     try {
 
       // SQL query to insert a new Cases record

@@ -2,7 +2,6 @@ import { SignJWT, jwtVerify } from 'jose';
 import { serialize, parse } from 'cookie';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { query } from './db';
-import { RowDataPacket } from 'mysql2';
 
 const secret = process.env.SESSION_SECRET;
 if (!secret) throw new Error('SESSION_SECRET is not set');

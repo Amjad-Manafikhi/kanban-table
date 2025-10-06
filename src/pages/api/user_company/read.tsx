@@ -1,6 +1,5 @@
 import { query } from '../../../lib/db'; // Adjust path if needed
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Task, Task_types } from '@/models/database';
 import { parse } from 'cookie';
 import { decrypt } from '@/lib/session';
 import { Company } from '@/models/database';

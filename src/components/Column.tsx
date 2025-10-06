@@ -1,27 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import {useSortable, verticalListSortingStrategy} from '@dnd-kit/sortable';
-import {CSS} from '@dnd-kit/utilities';
+
 import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  DragEndEvent,
-} from "@dnd-kit/core";
-import {
-  arrayMove,
-  horizontalListSortingStrategy,
   SortableContext,
-  sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
 import UpdateText, { TextLoading } from "./UpdateText"
 import { Task, Task_types } from "@/models/database";
 import TaskRow from './TaskRow';
 import { useEditingContext } from '@/contexts/EditingContext';
-import { Grip, GripVertical } from "lucide-react";
-const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL!;
+import {  GripVertical } from "lucide-react";
 
 type Props = {
     dragged:boolean;
@@ -31,7 +18,7 @@ type Props = {
     reFetch:() => Promise<unknown>;
 }
 
- function Column ({column, columnTasks, reFetch, clicking, dragged}:Props){
+ function Column ({column, columnTasks, clicking, dragged}:Props){
 
 
     const [items, setItems] = useState<{id:string}[]>([]);
