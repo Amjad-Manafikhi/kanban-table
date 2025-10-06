@@ -1,4 +1,4 @@
-import mysql, { RowDataPacket, OkPacket, ResultSetHeader } from "mysql2/promise";
+import mysql from "mysql2/promise";
 
 const connectionConfig = {
   host: process.env.DATABASE_HOST,
@@ -10,17 +10,13 @@ const connectionConfig = {
 
 const pool = mysql.createPool(connectionConfig);
 
-// T = RowDataPacket[] is default for SELECT queries
-export async function query<T = RowDataPacket[]>(
-  sql: string,
-  params?: Array<string | number | boolean | null>
-): Promise<T> {
+// ✅ Simpler generic, works for any type (rows or results)
+export async function query(sql,params){
   try {
-    const [rows] = await pool.query<T & RowDataPacket[]>(sql, params);
-    return rows;
+    const [rows] = await pool.query(sql, params);
+    return rows ;
   } catch (error) {
     console.error("Database query error:", error);
     throw error;
   }
 }
-  

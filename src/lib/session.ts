@@ -35,12 +35,15 @@ export async function decrypt(token: string): Promise<SessionPayload | null> {
 }
 
 // Set the cookie in the response
-type UserRow = { user_id: number };
-
+type  UserRow={
+  user_id:number;
+}
 export async function createSession(res: NextApiResponse, email: string) {
-  const result = await query<UserRow[]>('SELECT user_id FROM users WHERE email = ?', [email]);
+  const result = await query('SELECT user_id FROM users WHERE email = ?', [email]);
 
-  const userId = result[0]?.user_id;
+  const rows = result as unknown as UserRow[];
+
+const userId = rows[0]?.user_id;
   if (!userId) throw new Error("User not found");
 
   const expiresAt = Date.now() + 7 * 24 * 60 * 60 * 1000;
