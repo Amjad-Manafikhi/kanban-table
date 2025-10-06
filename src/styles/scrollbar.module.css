@@ -1,0 +1,13 @@
+/* scrollbar.module.css */
+.sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: #888888;
+  border-radius: 5px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  
+}
