@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState } from 'react';
 
 type ContextType = {
-  editingSpecs: boolean;
-  setEditingSpecs: React.Dispatch<React.SetStateAction<boolean>>;
+  editingSpecs: string;
+  setEditingSpecs: React.Dispatch<React.SetStateAction<string>>;
 
 }
 
@@ -11,7 +11,7 @@ export const EditingContext = createContext<ContextType | undefined>(undefined);
 
 
 export const EditingProvider = ({ children }: { children: React.ReactNode }) => {
-  const [editingSpecs, setEditingSpecs] = useState<boolean>(false)
+  const [editingSpecs, setEditingSpecs] = useState<string>("")
 
   return (
     <>

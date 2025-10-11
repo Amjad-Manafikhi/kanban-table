@@ -4,11 +4,13 @@ import { Task } from '@/models/database'; // Assuming Database.ts contains your 
 import { parse } from "cookie";
 import { decrypt } from "@/lib/session";
 import { v4 as uuidv4 } from 'uuid';
+import { initSocket } from '@/lib/socketServer';
+import { NextApiResponseServerIO } from '@/types/next';
 
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<{ message: string; result?: unknown; error?: string }>
+  res: NextApiResponseServerIO
 ) {
 
 
@@ -31,13 +33,27 @@ export default async function handler(
       const cookies = parse(req.headers.cookie || "");
       const session = cookies.session; // your encrypted token
       const data = session? await decrypt(session):null;
+      const uuid = uuidv4();
 
       // SQL query to insert a new Cases record
       const result = await query(
         'INSERT INTO tasks (task_id, user_id, type_id, title, description, created_at, idx, company_id ) VALUES (?,?,?,?,?,?,?,?)',
-        [`task-${uuidv4()}`, data?.userId, type_id, title, description, date, idx, 1 ]
+        [`task-${uuid}`, data?.userId, type_id, title, description, date, idx, 1 ]
       );
+      const io = initSocket(res);
 
+      const NewTask :Task={
+        task_id:`task-${uuid}`,
+        user_id:data?.userId || 0,
+        type_id:type_id,
+        title:title,
+        description:description,
+        date:date,
+        idx:idx,
+        company_id:1,
+      }
+      
+      io.emit("task-created", NewTask);
       res.status(200).json({
         message: 'task added successfully',
         result,

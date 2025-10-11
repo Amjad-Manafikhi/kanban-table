@@ -69,7 +69,7 @@ type Props = {
             <div className='flex flex-col gap-4'>
 
                 <div className='flex gap-2'>
-                  <UpdateText initialText={column.type_name} queryData={nameQueryData} setLoading={setNameLoading}>
+                  <UpdateText initialText={column.type_name} queryData={nameQueryData} setLoading={setNameLoading} id={`name-${column.type_id}`}>
                     <h1 className='font-bold -ml-1'>{nameLoading.loading === "false" ? column.type_name : nameLoading.textValue}</h1>
                   </UpdateText>
                   <p className='text-gray-500 '>({tasks.length})</p>

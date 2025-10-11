@@ -25,6 +25,7 @@ import Tools from '../components/Tools';
 import DeleteArea from './../components/DeleteArea';
 import { useEditingContext } from "@/contexts/EditingContext";
 import TaskRow from "./TaskRow";
+import { useSocket } from "../hooks/useSocket";
 
 export type Reorder = {
     id:string;
@@ -59,16 +60,17 @@ export default function KanbanTable({userTasks, userTaskTypes, updateColumns, up
         
         return intersections;
     };
-
-
-  
+    
+    
+    
+  const socket = useSocket();
   const {data:taskTypes, loading, reFetch, setState} = userTaskTypes;
   const {data:tasks, reFetch:tasksReFetch, setState:tasksSetState} = userTasks;
   const [columns, setColumns] = useState<Reorder[]>([]);
   const [rows, setRows] = useState<Reorder[]>([]);
   const [clicking, setClicking] = useState("");
   const [DraggedElement, setDraggedElement] = useState<Task| Task_types| null>(null);
-  const  {editingSpecs} = useEditingContext(); //change this to context 
+  const  {editingSpecs, setEditingSpecs} = useEditingContext(); //change this to context 
   useEffect(() => {
       if (taskTypes) {
           setColumns(taskTypes.map((type) => ({id:type.type_id})));
@@ -119,6 +121,103 @@ export default function KanbanTable({userTasks, userTaskTypes, updateColumns, up
 
   
   if (loading) return <p>Loading...</p>;
+
+
+
+
+
+  useEffect(() => {
+
+    console.log("qwer")
+    if (!socket) return;
+
+    console.log(socket,"qwer2")
+
+    socket.on("task-updated", (task:Task) => {
+        console.log("testS",task);
+        tasksSetState(prev => ({
+        ...prev,
+        data: prev.data
+            ? prev.data.map(t => (t.task_id === task.task_id ? task : t))
+            : prev.data,
+        }));
+    });
+
+     socket.on("task-created", (task:Task) => {
+        console.log("task-created",task)
+        tasksSetState(prev => ({
+        ...prev,
+        data: prev.data
+            ? [...prev.data,task]
+            : prev.data,
+        }));
+     });
+
+    socket.on("task-deleted", (id:string) => {
+      console.log("task-deleted",id)
+        tasksSetState(prev => ({
+        ...prev,
+        data: prev.data
+            ? prev.data.filter(t => t.task_id !== id)
+            : prev.data,
+        }));
+    });
+
+    socket.on("task-type-created", (NewTaskType:Task_types) => {
+        console.log("task-type-created",NewTaskType)
+        setState(prev => ({
+        ...prev,
+        data: prev.data
+            ? [...prev.data,NewTaskType]
+            : prev.data,
+        }));
+     });
+
+     socket.on("task-type-deleted", (id) => {
+        console.log("task-type-deleted",id)
+        setState(prev => ({
+        ...prev,
+        data: prev.data
+            ? prev.data.filter(t => t.type_id !== id)
+            : prev.data,
+        }));
+     });
+
+     socket.on("task-text-updated", (task:Task,id:string) => {
+        console.log("testS",task);
+        setEditingSpecs(id);
+        tasksSetState(prev => ({
+        ...prev,
+        data: prev.data
+            ? prev.data.map(t => (t.type_id === task.type_id ? task : t))
+            : prev.data,
+        }));
+    });
+     
+    socket.on("column-text-updated", (taskType:Task_types,id:string) => {
+        console.log("column",taskType);
+        setEditingSpecs(id);
+        setState(prev => ({
+        ...prev,
+        data: prev.data
+            ? prev.data.map(t => (t.type_id === taskType.type_id ? taskType : t))
+            : prev.data,
+        }));
+    });
+
+     
+
+    return () => {
+      socket.off("task-updated");
+      socket.off("task-created");
+      socket.off("task-deleted");
+      socket.off("task-type-created");
+      socket.off("task-type-deleted");
+      socket.off("task-text-updated");
+      socket.off("column-text-updated");
+      
+    };
+  }, [socket]);
 
 
   return (
@@ -248,6 +347,7 @@ function handleDragOver(event :DragOverEvent){
     const { active, over} = event;
     console.log("test2",over?.id);
     if (!over) return;
+    if(typeof(active.id)==='string'&&active.id[0]==='c')return;
     
     if (typeof(over.id)==="string" && over.id[0]==='c'){
      tasksSetState((prevState: FetchState<Task[]>) => {
@@ -263,3 +363,13 @@ function handleDragOver(event :DragOverEvent){
     }
   }
 } 
+
+
+
+
+
+
+
+// socket.on("connect", async () => {
+//   await reFetchTasks(); // ensure missed updates are recovered
+// });

@@ -22,22 +22,32 @@ type Props ={
     initialText:string;
     queryData:QueryData;
     setLoading: React.Dispatch<React.SetStateAction<TextLoading>>;
+    id:string;
 } 
 
 
-export default function UpdateText({ children, initialText, queryData, setLoading}:Props) {
+export default function UpdateText({ children, initialText, queryData, setLoading, id}:Props) {
     
   const { editingSpecs, setEditingSpecs } = useEditingContext();
   const [ editing, setEditing ] = useState(false);
   const [changedValue, setChangedValue] = useState(false);
 
 
+
   const [flash, setFlash] = useState(false);
 
   const triggerFlash = () => {
     setFlash(true);
-    setTimeout(() => setFlash(false), 2500); // 3 cycles × 0.5s
+    setTimeout(() => {setFlash(false);  }, 2500); // 3 cycles × 0.5s
+    
   };
+
+  useEffect(()=>{
+    if(editingSpecs===id && !editing) {
+      setEditingSpecs("");
+      triggerFlash();
+    }
+  },[editingSpecs])
 
     // 1. State to manage the current text value
   const [text, setText] = useState(initialText);
@@ -54,7 +64,7 @@ export default function UpdateText({ children, initialText, queryData, setLoadin
 
   // Handler to activate edit mode on double-click
   const handleDoubleClick = () => {
-    setEditingSpecs(true);
+    setEditingSpecs(id);
     setEditing(true);
 
   };
@@ -67,7 +77,7 @@ export default function UpdateText({ children, initialText, queryData, setLoadin
 
   // Handler to save changes and exit edit mode
   const handleSave = (triggerFlash:() => void) => {
-    setEditingSpecs(false);
+    setEditingSpecs("");
     setEditing(false);
     if(changedValue===true){
         triggerFlash();
@@ -77,7 +87,8 @@ export default function UpdateText({ children, initialText, queryData, setLoadin
         value: text, 
         tableName:queryData.tableName,
         columnName:queryData.columnName,
-    },setLoading)}
+    },setLoading, id)}
+    setChangedValue(false);
   }
  
 
@@ -88,7 +99,7 @@ export default function UpdateText({ children, initialText, queryData, setLoadin
     } else if (event.key === 'Escape') {
       // Revert text to original if you don't want to save on Escape
       // For simplicity, we just exit edit mode here.
-      setEditingSpecs(false); 
+      setEditingSpecs(""); 
       setEditing(false); 
     }
   };
@@ -113,10 +124,10 @@ export default function UpdateText({ children, initialText, queryData, setLoadin
             {children}
             <style jsx>{`
                 .flash-text {
-                animation: flash-green 1s  3;
+                animation: flash-green 1s 3 !important;
                 }
                 @keyframes flash-green {
-                0%, 100% { color: white; }
+                0%, 100% { color: white ; }
                 50% { color: #61D345; }
                 }
             `}</style>
@@ -126,7 +137,7 @@ export default function UpdateText({ children, initialText, queryData, setLoadin
   );
 }
 
-async function updateText(queryData:UpdateQuery , setLoading:React.Dispatch<React.SetStateAction<TextLoading>>){ 
+async function updateText(queryData:UpdateQuery , setLoading:React.Dispatch<React.SetStateAction<TextLoading>>, id:string){ 
     setLoading({
         loading:"loading",
         textValue:queryData.value
@@ -136,7 +147,7 @@ async function updateText(queryData:UpdateQuery , setLoading:React.Dispatch<Reac
         {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(queryData),
+            body: JSON.stringify({queryData,id}),
         }
     );
     

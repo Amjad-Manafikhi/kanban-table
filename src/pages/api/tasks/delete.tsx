@@ -1,9 +1,11 @@
+import { initSocket } from '@/lib/socketServer';
 import { query } from '../../../lib/db'; // Adjust path if needed
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextApiResponseServerIO } from '@/types/next';
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<{ message: string; result?: unknown; error?: string }>
+  res: NextApiResponseServerIO
 ) {
   if (req.method === 'DELETE') {
     const { id } = req.body;
@@ -14,10 +16,14 @@ export default async function handler(
     try {
       const result = await query('DELETE FROM tasks WHERE task_id = ?', [id]);
 
-      res.status(200).json({
+      const io = initSocket(res);
+      
+      io.emit("task-deleted", id);
+      return res.status(200).json({
         message: 'task deleted successfully',
         result,
       });
+      
       }catch (error: unknown) {
         console.error(`Error deleting task:`, error);
 

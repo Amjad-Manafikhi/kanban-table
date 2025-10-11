@@ -64,10 +64,10 @@ type Props = {
                 <div className="h-full border-2 rounded-full border-blue-400"></div>
 
                 <div className="flex flex-col py-2 gap-1">
-                    <UpdateText initialText={task.title} queryData={titleQueryData} setLoading={setTitleLoading}>
+                    <UpdateText initialText={task.title} queryData={titleQueryData} setLoading={setTitleLoading} id={`title-${task.task_id}`}>
                         <h3 className="text-[15px]">{titleLoading.loading === "false" ? task.title : titleLoading.textValue}</h3>    
                     </UpdateText>
-                    <UpdateText initialText={task.description} queryData={descriptionQueryData} setLoading={setDescriptionLoading}>
+                    <UpdateText initialText={task.description} queryData={descriptionQueryData} setLoading={setDescriptionLoading} id={`description-${task.task_id}`}>
                         <p className="text-[12px] text-gray-600 cursor-pointer">{descriptionLoading.loading === "false"? task.description : descriptionLoading.textValue}</p>    
                     </UpdateText>
                     

@@ -1,12 +1,17 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest } from "next";
+import type { NextApiResponseServerIO } from './../../../types/next.d.ts';
 import { query } from "@/lib/db"; // your mysql2 helper
+import { initSocket } from "@/lib/socketServer";
 
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
+  
   if (req.method !== "PUT") {
     return res.status(405).json({ message: "Method not allowed" });
   }
+  console.log("updating..");
   try {
+    
 
     
     const { alignments, overColumnId, activeTaskId} = req.body;
@@ -30,7 +35,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 
     await Promise.all(updatePromises);
-    return res.status(200).json({ success: true });
+    const [updatedTask]: any = await query("SELECT * FROM tasks WHERE task_id = ?", [activeTaskId]);
+    console.log("activevvv", activeTaskId);
+    
+    console.log("testSs",updatedTask);
+    
+    const io = initSocket(res);
+
+    io.emit("task-updated", updatedTask);
+    return res.status(200).json({ success: true, task:updatedTask});
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Error updating rows" });

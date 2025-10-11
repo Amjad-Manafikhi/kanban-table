@@ -30,6 +30,8 @@ export type Task = {
     user_id: number;
     type_id: string;
     title: string;
+    date:Date;
     description: string;
     idx: number;
+    company_id:number;
 }
