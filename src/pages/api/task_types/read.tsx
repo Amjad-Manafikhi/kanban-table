@@ -11,9 +11,10 @@ export default async function handler(
   
 
   if (req.method === 'GET') {
+    const { userId } = req.query
     try {
       const taskTypes = await query(
-        'SELECT * FROM task_types order by idx'
+        'SELECT * FROM task_types WHERE user_id = ? order by idx', [userId]
       );
 
       res.status(200).json(taskTypes as Task_types[]);
