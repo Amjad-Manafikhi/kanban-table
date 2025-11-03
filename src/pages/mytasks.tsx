@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Task, Task_types } from "@/models/database";
 import useFetchUserTasks from "@/hooks/useFetchUserTasks";
 import Layout from "@/components/Layout";
-import KanbanTable, {Reorder, RowsReorder} from "../components/KanbanTable"
+import KanbanTable, {Reorder} from "../components/KanbanTable"
 import { EditingProvider } from "@/contexts/EditingContext";
 import ColumnForm  from "../components/ColumnForm"
 import Modal from "@/components/Modal";

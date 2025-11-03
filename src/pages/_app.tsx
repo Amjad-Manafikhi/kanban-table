@@ -3,7 +3,6 @@ import type { AppProps } from "next/app";
 import { Toaster } from "react-hot-toast";
 import { io } from "socket.io-client";
 import { useEffect } from "react";
-import LiveMouseBoard from "@/components/LiveMouserBoard";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (

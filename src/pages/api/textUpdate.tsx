@@ -1,6 +1,6 @@
 import { initSocket }  from '@/lib/socketServer';
 import { query } from '../../lib/db';
-import type { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest } from 'next';
 import { NextApiResponseServerIO } from '@/types/next';
 import { emitExceptSender } from './helper';
 

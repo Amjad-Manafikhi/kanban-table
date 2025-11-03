@@ -4,7 +4,6 @@ import { AppSidebar } from "./AppSidebar";
 import Navbar from "./Navbar";
 import { Company } from "@/models/database";
 import { useRouter } from "next/router";
-import LiveMouseBoard from "./LiveMouserBoard"
 
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 

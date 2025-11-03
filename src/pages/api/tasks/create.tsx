@@ -1,5 +1,5 @@
 import { query } from '../../../lib/db'; // Adjust path if needed
-import type { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest } from 'next';
 import { Task } from '@/models/database'; // Assuming Database.ts contains your types
 import { parse } from "cookie";
 import { decrypt } from "@/lib/session";

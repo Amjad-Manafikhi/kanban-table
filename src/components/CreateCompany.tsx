@@ -33,7 +33,6 @@ type Props = {
     setReFetchSidebarCompanies:Dispatch<SetStateAction<boolean>>
 }
 export default function CreateCOmpany({setReFetchSidebarCompanies}:Props) {
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState("");
 
@@ -75,18 +74,15 @@ export default function CreateCOmpany({setReFetchSidebarCompanies}:Props) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ companyId, userId }),
     });
-    const result2 = await response2.json();
 
     
     setLoading(false);
 
     if (response.ok) {
-      setError("");
       toast.success("Company created successfully!");
       setReFetchSidebarCompanies(prev => !prev);
       reset();
     } else {
-      setError(result.error || "Something went wrong");
       toast.error(result.error || "Something went wrong");
     }
   };

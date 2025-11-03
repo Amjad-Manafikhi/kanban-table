@@ -27,7 +27,6 @@ import { useEditingContext } from "@/contexts/EditingContext";
 import TaskRow from "./TaskRow";
 import { useSocket } from "../hooks/useSocket";
 import LiveMouseBoard from "./LiveMouserBoard";
-const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export type Reorder = {
     id: string;

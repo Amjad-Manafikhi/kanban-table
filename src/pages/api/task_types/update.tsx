@@ -1,4 +1,4 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest } from "next";
 import { query } from "@/lib/db"; // your mysql2 helper
 import { initSocket }  from "@/lib/socketServer";
 import { NextApiResponseServerIO } from "@/types/next";

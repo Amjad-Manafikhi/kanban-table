@@ -6,7 +6,7 @@ const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL ;
 let socketInstance: Socket | null = null;
 
 export function useSocket() {
-  const [socket, setSocket] = useState<Socket | null>(() => {
+  const [socket] = useState<Socket | null>(() => {
     if (!socketInstance) {
       socketInstance = io(SOCKET_URL, {
         path: "/api/socket_io",

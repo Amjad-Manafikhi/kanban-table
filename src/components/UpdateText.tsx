@@ -49,7 +49,7 @@ export default function UpdateText({ children, initialText, queryData, setLoadin
       setEditingSpecs("");
       triggerFlash();
     }
-  },[editingSpecs])
+  },[editingSpecs, id, editing, setEditingSpecs])
 
     // 1. State to manage the current text value
   const [text, setText] = useState(initialText);

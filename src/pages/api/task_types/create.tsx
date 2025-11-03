@@ -1,5 +1,5 @@
 import { query } from '../../../lib/db'; // Adjust path if needed
-import type { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest } from 'next';
 import { v4 as uuidv4 } from 'uuid';
 import { decrypt } from '@/lib/session';
 import { parse } from 'cookie';

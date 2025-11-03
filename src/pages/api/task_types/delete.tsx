@@ -1,9 +1,7 @@
 import { initSocket }  from '@/lib/socketServer';
 import { query } from '../../../lib/db'; // Adjust path if needed
-import type { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest } from 'next';
 import { NextApiResponseServerIO } from '@/types/next';
-import { parse } from "cookie";
-import { decrypt } from "@/lib/session";
 import { emitExceptSender } from '../helper';
 
 export default async function handler(
@@ -12,9 +10,6 @@ export default async function handler(
 ) {
   if (req.method === 'DELETE') {
 
-    const cookies = parse(req.headers.cookie || "");
-    const session = cookies.session; // your encrypted token
-    const sessionData = session? await decrypt(session):null;
     const { id, socketId } = req.body;
     if (!id) {
       return res.status(400).json({ message: 'Missing task_type ID' });
