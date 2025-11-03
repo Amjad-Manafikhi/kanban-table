@@ -23,7 +23,7 @@ export default async function handler(
         io:io, 
         socketId:socketId,
         event: "task-type-deleted",
-        data:id
+        data:{id}
       });      
 
       

@@ -23,7 +23,7 @@ export default async function handler(
         io:io, 
         socketId:socketId,
         event: "task-deleted",
-        data:id
+        data:{id}
       });
       return res.status(200).json({
         message: 'task deleted successfully',

@@ -43,7 +43,7 @@ type FetchedData<T> = {
 type Props = {
     userTasks: FetchedData<Task[]>;
     userTaskTypes: FetchedData<Task_types[]>;
-    updateColumns: (newcolumns: Reorder[], activeId: string, overId: string) => Promise<any>;
+    updateColumns: (newcolumns: Reorder[], activeId: string, overId: string) => Promise<void>;
     updateRows: (newItems: Reorder[], overColumnId: string, activeTaskId: string) => Promise<void>;
     deleteColumn: (id: string) => Promise<void>;
     deleteRow: (id: string) => Promise<void>;
@@ -56,7 +56,6 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
         const intersections = rectIntersection(args);
 
         // If trash is intersected, prioritize it
-        console.log(intersections);
         const trashHit = intersections.find((i) => i.id === "trash");
         if (trashHit) return [trashHit];
 
@@ -88,7 +87,6 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
             }, {} as Record<string, Reorder[]>))
         }
     }, [tasks]);
-    console.log("dfgh", rows);
 
 
     const sensors = useSensors(
@@ -123,10 +121,9 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
     }
 
     const typeIdMap = countTypeIds(tasks);
-    console.log("qwert", typeIdMap);
 
 
-    if (loading) return <p>Loading...</p>;
+     
 
 
 
@@ -218,20 +215,20 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
   });
 
   // 🔹 Task text updated
-  socket.on("task-text-updated", ({task, id}) => {
+  socket.on("task-text-updated", ({element, id}) => {
     setEditingSpecs(id);
     tasksSetState(prev => ({
       ...prev,
-      data: prev.data ? prev.data.map(t => (t.task_id === task.task_id ? task : t)) : prev.data,
+      data: prev.data ? prev.data.map(t => (t.task_id === element.task_id ? element : t)) : prev.data,
     }));
   });
 
   // 🔹 Column text updated
-  socket.on("column-text-updated", ({type, id }) => {
+  socket.on("column-text-updated", ({element, id }) => {
     setEditingSpecs(id);
     setState(prev => ({
       ...prev,
-      data: prev.data ? prev.data.map(t => (t.type_id === type.type_id ? type : t)) : prev.data,
+      data: prev.data ? prev.data.map(t => (t.type_id === element.type_id ? element : t)) : prev.data,
     }));
   });
 
@@ -250,7 +247,9 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
 
 
     return (
-
+        <>
+        {loading && <p>Loading...</p>}
+        {!loading && (
         <DndContext
             sensors={sensors}
             collisionDetection={collisionDetection}
@@ -314,7 +313,9 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
             </DragOverlay>
             <DeleteArea isDragging={clicking.length > 0 ? true : false} />
 
-        </DndContext>
+        </DndContext>)}
+        </>
+
     );
     async function handleDragStart(event: DragStartEvent) {
         if (editingSpecs) return;

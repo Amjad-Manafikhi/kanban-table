@@ -3,6 +3,7 @@ import type { NextApiResponseServerIO } from './../../../types/next.d.ts';
 import { query } from "@/lib/db"; // your mysql2 helper
 import { initSocket }  from "@/lib/socketServer";
 import { emitExceptSender } from "../helper";
+import { Task } from "@/models/database.jsx";
 
 
 
@@ -38,17 +39,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
 
 
     await Promise.all(updatePromises);
-    const [updatedTask]: any = await query("SELECT * FROM tasks WHERE task_id = ?", [activeTaskId]);
-    console.log("activevvv", socketId);
-    
-    console.log("testSs",updatedTask);
+    const [updatedTask] = (await query(
+      "SELECT * FROM tasks WHERE task_id = ?",
+      [activeTaskId]
+    )) as Task[];
     
     const io = initSocket(res);
     emitExceptSender({
       io:io, 
       socketId:socketId,
       event: "task-updated",
-      data:updatedTask
+      data:{element:updatedTask}
     });
 
     return res.status(200).json({ success: true, task:updatedTask});

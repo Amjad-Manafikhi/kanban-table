@@ -67,7 +67,6 @@ export default function CreateCOmpany({setReFetchSidebarCompanies}:Props) {
 
     const result = await response.json();
     const companyId = result.result.insertId;
-    console.log("company",companyId);
 
     const response2 = await fetch("/api/user_company/create", {
       method: "POST",

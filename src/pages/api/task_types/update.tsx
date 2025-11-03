@@ -4,6 +4,7 @@ import { initSocket }  from "@/lib/socketServer";
 import { NextApiResponseServerIO } from "@/types/next";
 
 import { emitExceptSender } from "../helper";
+import { Task_types } from "@/models/database";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
   if (req.method !== "PUT") {
@@ -30,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
 
     console.log("tre");
 
-    const updatedTaskTypes = await query("SELECT * FROM task_types ORDER BY idx");
+    const updatedTaskTypes = (await query("SELECT * FROM task_types ORDER BY idx")) as Task_types[];
     console.log("amjad",socketId);
 
     

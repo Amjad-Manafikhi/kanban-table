@@ -1,8 +1,10 @@
 import { Server } from "socket.io";
 import type { NextApiResponseServerIO } from "@/types/next";
+import { Server as HTTPServer } from "http";
+import { Server as SocketIOServer } from "socket.io";
 
 export function initSocket(res: NextApiResponseServerIO) {
-  const server = res.socket.server as any;
+  const server = res.socket.server as HTTPServer & { io?: SocketIOServer };
   console.log("Existing io:", !!server.io);
 
   // prevent re-initialization

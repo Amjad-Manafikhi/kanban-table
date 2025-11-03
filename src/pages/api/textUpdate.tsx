@@ -3,6 +3,7 @@ import { query } from '../../lib/db';
 import type { NextApiRequest } from 'next';
 import { NextApiResponseServerIO } from '@/types/next';
 import { emitExceptSender } from './helper';
+import { Task, Task_types } from '@/models/database';
 
 export default async function handler(
   req: NextApiRequest,
@@ -29,7 +30,7 @@ export default async function handler(
         [value, rowId]
       );
 
-      const [updatedElement]: any = await query(`SELECT * FROM ${tableName} WHERE ${rowIdName} = ?`, [rowId]);
+      const updatedElement = (await query(`SELECT * FROM ${tableName} WHERE ${rowIdName} = ?`, [rowId])) as Task[];
       
       
       const io = initSocket(res);
@@ -41,7 +42,7 @@ export default async function handler(
           io:io, 
           socketId:socketId,
           event: "task-text-updated",
-          data:{task:updatedElement, id:id}
+          data:{element:updatedElement[0], id:id}
         });
       }        
       else{ 
@@ -49,7 +50,7 @@ export default async function handler(
           io:io, 
           socketId:socketId,
           event: "column-text-updated",
-          data:{type:updatedElement, id:id}
+          data:{element:updatedElement[0], id:id}
         });
       }
       res.status(200).json({
