@@ -74,16 +74,17 @@ export default function CreateCOmpany({setReFetchSidebarCompanies}:Props) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ companyId, userId }),
     });
+    const result2 = await response2.json();
 
     
     setLoading(false);
 
-    if (response.ok) {
+    if (response.ok && response2.ok) {
       toast.success("Company created successfully!");
       setReFetchSidebarCompanies(prev => !prev);
       reset();
     } else {
-      toast.error(result.error || "Something went wrong");
+      toast.error(result.error || result2.error || "Something went wrong");
     }
   };
 

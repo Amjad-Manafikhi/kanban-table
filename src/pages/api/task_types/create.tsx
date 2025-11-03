@@ -50,7 +50,7 @@ export default async function handler(
       emitExceptSender({
         io:io, 
         socketId:socketId,
-        event: "task-created",
+        event: "task-type-created",
         data:NewTaskType
       });
       

@@ -11,7 +11,6 @@ export default async function handler(
   if (req.method === 'PUT') {
     const { rowId, value, tableName, columnName, rowIdName, socketId} = req.body.queryData;
     const { id } =req.body;
-    console.log("amjad",socketId)
     if (
       !rowId ||
       !rowIdName ||
@@ -31,9 +30,7 @@ export default async function handler(
       );
 
       const [updatedElement]: any = await query(`SELECT * FROM ${tableName} WHERE ${rowIdName} = ?`, [rowId]);
-      console.log("activevvv", rowId);
       
-      console.log("testSs",updatedElement);
       
       const io = initSocket(res);
       console.log(updatedElement)

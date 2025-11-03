@@ -201,10 +201,11 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
   });
 
   // 🔹 Task type created
-  socket.on("task-type-created", (newType: Task_types) => {
+  socket.on("task-type-created", (newTaskType: Task_types) => {
+    console.log("task-typeCreated",newTaskType);
     setState(prev => ({
       ...prev,
-      data: prev.data ? [...prev.data, newType] : prev.data,
+      data: prev.data ? [...prev.data, newTaskType] : prev.data,
     }));
   });
 
@@ -244,7 +245,7 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
     socket.off("task-text-updated");
     socket.off("column-text-updated");
   };
-}, [socket, socketId]);
+}, [socket, socketId, setEditingSpecs, setState, taskTypes, tasks, tasksSetState]);
 
 
 
@@ -262,11 +263,11 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
             <Tools taskTypes={taskTypes} typeIdMap={typeIdMap} />
             <div id="kanban-table" className="w-full h-full bg-red pt-6" >
                 <SortableContext items={columns} strategy={horizontalListSortingStrategy}>
-                    <div className="flex flex-nowrap gap-8 overflow-scrol relative w-[1000px] m-auto h-[400px] ">
+                    <div className="flex flex-nowrap gap-8 overflow-scroll relative w-[1000px] m-auto h-[400px] ">
                         <LiveMouseBoard/>
                         {taskTypes?.map((item) => (
-                            <div key={item.type_name} className="flex-shrink-0 w-[300px] h-[350px]">
-                                <div className="relative w-full h-screen bg-gray-50 overflow-hidden">
+                            <div key={item.type_name} className="flex-shrink-0 w-[300px] max-h-[350px]">
+                                <div className="relative w-full h-screen">
                                     <Column
                                         dragged={false}
                                         clicking={clicking}
