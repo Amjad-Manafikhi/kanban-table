@@ -124,12 +124,12 @@ export function AppSidebar( { companies }:Props) {
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton 
                       className={cn(
-                    "flex items-center gap-2 my-1 rounded-md px-4 py-2 transition-colors hover:bg-blue-500 hover:text-white",
+                    "flex items-center gap-2 my-1 rounded-md px-4 py-2 transition-colors hover:bg-blue-500 hover:text-white cursor-pointer",
                     
                   )}
                     >
                         <FaUserTie className="w-4 h-4 " />
-                        <p className="flex justify-between w-full">My Companies 
+                        <p className="flex justify-between w-full ">My Companies 
                           {companiesIsOpen ? <ChevronUp className="w-4 h-4 mt-1"/> : <ChevronDown className="w-4 h-4 mt-1"/> } 
                         </p>
                     </SidebarMenuButton>

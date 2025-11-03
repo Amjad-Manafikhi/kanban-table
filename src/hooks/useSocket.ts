@@ -1,25 +1,38 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 
-const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3000";
+const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL ;
+
+let socketInstance: Socket | null = null;
 
 export function useSocket() {
-  const socketRef = useRef<Socket | null>(null);
+  const [socket, setSocket] = useState<Socket | null>(() => {
+    if (!socketInstance) {
+      socketInstance = io(SOCKET_URL, {
+        path: "/api/socket_io",
+        transports: ["websocket"],
+      });
+    }
+    return socketInstance;
+  });
+
+  const [socketId, setSocketId] = useState<string | null>(socket?.id ?? null);
+  console.log("userId",socketId);
 
   useEffect(() => {
-    // Connect once on mount
-    const socket = io(SOCKET_URL, {
-      path: "/api/socket_io",
-      transports: ["websocket"],
-    });
+    if (!socket) return;
 
-    socketRef.current = socket;
-
-    // Cleanup on unmount
-    return () => {
-      socket.disconnect();
+    const handleConnect = () => {
+      setSocketId(socket.id ?? "");
+      console.log("🔌 Connected:", socket.id);
     };
-  }, []);
 
-  return socketRef.current;
+    socket.on("connect", handleConnect);
+
+    return () => {
+      socket.off("connect", handleConnect);
+    };
+  }, [socket]);
+
+  return { socket, socketId };
 }

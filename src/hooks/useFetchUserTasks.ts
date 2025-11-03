@@ -20,7 +20,7 @@ export default function useFetchUserTasks<T>(url: string) {
   useEffect(() => {
     async function getUser() {
       try {
-        const res = await fetch(NEXT_PUBLIC_API_URL + "/api/auth/me", {
+        const res = await fetch("/api/auth/me", {
           credentials: "include",
         });
         if (!res.ok) return;

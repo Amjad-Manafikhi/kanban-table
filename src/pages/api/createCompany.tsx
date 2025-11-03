@@ -1,4 +1,4 @@
-import { query } from '../../../lib/db'; // Adjust path if needed
+import { query } from '../../lib/db'; // Adjust path if needed
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 
@@ -10,37 +10,39 @@ export default async function handler(
 
 
   if (req.method === 'POST') {
-    const { companyId, userId } = req.body;
+    const {companyName, userId}= req.body;
     // Validate required fields
     if (
-      companyId  === undefined ||
-      userId  === undefined
+      companyName === undefined ||
+      userId === undefined
     ) {
-      return res.status(400).json({ message: 'Missing user_company values' });
+      return res.status(400).json({ message: 'Missing company values' });
     }
     try {
 
       // SQL query to insert a new Cases record
       const result = await query(
-        'INSERT INTO user_company (company_id, user_id ) VALUES (?,?)',
-        [companyId, userId ]
+        'INSERT INTO companies (name, user_id) VALUES (?,?)',
+        [companyName, userId]
       );
+      
+
 
       res.status(200).json({
-        message: 'user_company added successfully',
+        message: 'company added successfully',
         result,
       });
     }  catch (error: unknown) {
-        console.error(`Error creating user_company:`, error);
+        console.error(`Error creating company:`, error);
 
         if (error instanceof Error) {
           res.status(500).json({
-            message: `Error creating user_company`,
+            message: `Error creating company`,
             error: error.message,
           });
         } else {
           res.status(500).json({
-            message: `Error creating user_company`,
+            message: `Error creating company`,
             error: 'Unknown error occurred',
           });
         }
@@ -48,7 +50,7 @@ export default async function handler(
 
   } else {
     // Handle unsupported HTTP methods
-    res.setHeader('Allow', ['POST']);
+    res.setHeader('Allow', ['PUT']);
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }

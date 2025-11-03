@@ -1,4 +1,5 @@
 import { useEditingContext } from '@/contexts/EditingContext';
+import { useSocket } from '@/hooks/useSocket';
 import React, { useState, useRef, useEffect, ReactNode } from 'react';
 import toast from 'react-hot-toast';
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -15,7 +16,7 @@ export type QueryData = {
     rowIdName:string;
 }
 
-type UpdateQuery=QueryData & {value:string}
+type UpdateQuery=QueryData & {value:string ,socketId:string|null}
 
 type Props ={
     children:ReactNode;
@@ -31,6 +32,7 @@ export default function UpdateText({ children, initialText, queryData, setLoadin
   const { editingSpecs, setEditingSpecs } = useEditingContext();
   const [ editing, setEditing ] = useState(false);
   const [changedValue, setChangedValue] = useState(false);
+  const { socketId } = useSocket(); 
 
 
 
@@ -87,6 +89,8 @@ export default function UpdateText({ children, initialText, queryData, setLoadin
         value: text, 
         tableName:queryData.tableName,
         columnName:queryData.columnName,
+        socketId:socketId,
+
     },setLoading, id)}
     setChangedValue(false);
   }

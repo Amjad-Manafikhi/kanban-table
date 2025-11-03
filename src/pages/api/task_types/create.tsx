@@ -4,8 +4,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { decrypt } from '@/lib/session';
 import { parse } from 'cookie';
 import { NextApiResponseServerIO } from '@/types/next';
-import { initSocket } from '@/lib/socketServer';
+import { initSocket }   from '@/lib/socketServer';
 import { Task_types } from '@/models/database';
+import { emitExceptSender } from '../helper';
 
 export default async function handler(
   req: NextApiRequest,
@@ -26,7 +27,7 @@ export default async function handler(
     }
 
     try {
-      const { typeName, idx } = data;
+      const { typeName, idx, socketId} = data;
       const cookies = parse(req.headers.cookie || "");
       const session = cookies.session; // your encrypted token
       const sessionData = session? await decrypt(session):null;
@@ -46,8 +47,14 @@ export default async function handler(
             }
 
       const io = initSocket(res);
+      emitExceptSender({
+        io:io, 
+        socketId:socketId,
+        event: "task-created",
+        data:NewTaskType
+      });
+      
             
-      io.emit("task-type-created",NewTaskType);
 
       res.status(200).json({
         message: 'type added successfully',

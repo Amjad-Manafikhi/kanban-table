@@ -4,15 +4,17 @@ import { AppSidebar } from "./AppSidebar";
 import Navbar from "./Navbar";
 import { Company } from "@/models/database";
 import { useRouter } from "next/router";
+import LiveMouseBoard from "./LiveMouserBoard"
 
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 type LayoutProps = {
   children: ReactNode;
   setPageCompanies?:React.Dispatch<React.SetStateAction<Company[]|undefined>>
+  reFetchSidebarCompanies?:boolean;
 };
 
-export default function Layout({ children, setPageCompanies }: LayoutProps) {
+export default function Layout({ children, setPageCompanies, reFetchSidebarCompanies }: LayoutProps) {
   const [companies, setCompanies] = useState<Company[]>([]); // ✅ store resolved data
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -33,7 +35,7 @@ export default function Layout({ children, setPageCompanies }: LayoutProps) {
       }
     }
     setData();
-  },[company, setPageCompanies, router]);
+  },[company, setPageCompanies, router, reFetchSidebarCompanies]);
 
   if(loading)return <p>Loading...</p>
   return (

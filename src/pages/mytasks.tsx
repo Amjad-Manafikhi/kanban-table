@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { Task, Task_types } from "@/models/database";
 import useFetchUserTasks from "@/hooks/useFetchUserTasks";
 import Layout from "@/components/Layout";
-import KanbanTable, {Reorder} from "../components/KanbanTable"
+import KanbanTable, {Reorder, RowsReorder} from "../components/KanbanTable"
 import { EditingProvider } from "@/contexts/EditingContext";
 import ColumnForm  from "../components/ColumnForm"
 import Modal from "@/components/Modal";
+import { useSocket } from './../hooks/useSocket';
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 
@@ -14,6 +15,8 @@ export default function MyTasks() {
   const [ OpenForm, setOpenForm ] = useState(false); 
   const userTaskTypes = useFetchUserTasks<Task_types[]>("/api/task_types/read");
   const userTasks = useFetchUserTasks<Task[]>("/api/tasks/read");
+  const { socketId } = useSocket();
+  console.log("usermytasks",socketId)
   
 
 
@@ -51,14 +54,14 @@ export default function MyTasks() {
 
     
 
-  async function updateColumns(newcolumns:Reorder[]) {
+  async function updateColumns(newcolumns:Reorder[], activeId:string, overId:string) {
     try {
       const res = await fetch(
         NEXT_PUBLIC_API_URL + "/api/task_types/update",
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ alignments: newcolumns}),
+          body: JSON.stringify({ alignments: newcolumns,activeId, overId, socketId}),
         }
       );
       
@@ -66,6 +69,7 @@ export default function MyTasks() {
 
       if (res.ok) {
         console.log("updated:", data);
+        return data.data;
       } else {
         console.error("update failed:", data.message);
       }
@@ -81,7 +85,7 @@ export default function MyTasks() {
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ alignments: newItems, overColumnId:overColumnId, activeTaskId }),
+          body: JSON.stringify({ alignments: newItems, overColumnId:overColumnId, activeTaskId, socketId }),
         }
       );
       
@@ -106,7 +110,7 @@ export default function MyTasks() {
         {
         method: "delete",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: id}),
+        body: JSON.stringify({ id, socketId }),
         }
     );
     
@@ -128,7 +132,7 @@ export default function MyTasks() {
         {
         method: "delete",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id:id }),
+        body: JSON.stringify({ id, socketId }),
         }
     );
     

@@ -1,14 +1,19 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { query } from "@/lib/db"; // your mysql2 helper
+import { initSocket }  from "@/lib/socketServer";
+import { NextApiResponseServerIO } from "@/types/next";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+import { emitExceptSender } from "../helper";
+
+export default async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
   if (req.method !== "PUT") {
     return res.status(405).json({ message: "Method not allowed" });
   }
   try {
-
     
-    const { alignments } = req.body;
+    
+    const { alignments , activeId, overId, socketId} = req.body;
+    console.log("task_type",alignments,activeId,overId)
 
     const updatePromises = alignments.map((alignment:{id:string}, index:number) => {
       const val = alignment?.id;
@@ -22,9 +27,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     await Promise.all(updatePromises);
-    return res.status(200).json({ success: true });
+
+    console.log("tre");
+
+    const updatedTaskTypes = await query("SELECT * FROM task_types ORDER BY idx");
+    console.log("amjad",socketId);
+
+    
+
+    const io = initSocket(res);
+    emitExceptSender({
+      io:io, 
+      socketId:socketId,
+      event: "task-type-updated",
+      data:{activeId,overId}
+    });
+    
+    return res.status(200).json({ success: true, data: updatedTaskTypes });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Error updating rows" });
+    return res.status(500).json({ message: "Error updating columns" });
   }
 }

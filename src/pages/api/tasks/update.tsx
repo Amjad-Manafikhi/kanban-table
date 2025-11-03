@@ -1,7 +1,9 @@
 import type { NextApiRequest } from "next";
 import type { NextApiResponseServerIO } from './../../../types/next.d.ts';
 import { query } from "@/lib/db"; // your mysql2 helper
-import { initSocket } from "@/lib/socketServer";
+import { initSocket }  from "@/lib/socketServer";
+import { emitExceptSender } from "../helper";
+
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
@@ -14,7 +16,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
     
 
     
-    const { alignments, overColumnId, activeTaskId} = req.body;
+    const { alignments, overColumnId, activeTaskId, socketId} = req.body;
+    console.log("bnbnb",alignments);
     
     const updatePromises = alignments.map((alignment:{id:string}, index:number) => {
       const val = alignment?.id;
@@ -36,13 +39,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
 
     await Promise.all(updatePromises);
     const [updatedTask]: any = await query("SELECT * FROM tasks WHERE task_id = ?", [activeTaskId]);
-    console.log("activevvv", activeTaskId);
+    console.log("activevvv", socketId);
     
     console.log("testSs",updatedTask);
     
     const io = initSocket(res);
+    emitExceptSender({
+      io:io, 
+      socketId:socketId,
+      event: "task-updated",
+      data:updatedTask
+    });
 
-    io.emit("task-updated", updatedTask);
     return res.status(200).json({ success: true, task:updatedTask});
   } catch (error) {
     console.error(error);

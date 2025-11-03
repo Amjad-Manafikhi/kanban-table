@@ -1,14 +1,16 @@
-import { initSocket } from '@/lib/socketServer';
+import { initSocket }  from '@/lib/socketServer';
 import { query } from '../../../lib/db'; // Adjust path if needed
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { NextApiResponseServerIO } from '@/types/next';
+
+import { emitExceptSender } from '../helper';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponseServerIO
 ) {
   if (req.method === 'DELETE') {
-    const { id } = req.body;
+    const { id, socketId } = req.body;
     if (!id) {
       return res.status(400).json({ message: 'Missing task ID' });
     }
@@ -17,8 +19,12 @@ export default async function handler(
       const result = await query('DELETE FROM tasks WHERE task_id = ?', [id]);
 
       const io = initSocket(res);
-      
-      io.emit("task-deleted", id);
+      emitExceptSender({
+        io:io, 
+        socketId:socketId,
+        event: "task-deleted",
+        data:id
+      });
       return res.status(200).json({
         message: 'task deleted successfully',
         result,

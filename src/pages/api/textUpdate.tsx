@@ -1,22 +1,24 @@
-import { initSocket } from '@/lib/socketServer';
+import { initSocket }  from '@/lib/socketServer';
 import { query } from '../../lib/db';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { NextApiResponseServerIO } from '@/types/next';
+import { emitExceptSender } from './helper';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponseServerIO
 ) {
   if (req.method === 'PUT') {
-    const { rowId, value, tableName, columnName, rowIdName} = req.body.queryData;
+    const { rowId, value, tableName, columnName, rowIdName, socketId} = req.body.queryData;
     const { id } =req.body;
-    console.log("amjad",rowId,id)
+    console.log("amjad",socketId)
     if (
       !rowId ||
       !rowIdName ||
       !value ||
       !columnName ||
-      !tableName
+      !tableName ||
+      !socketId
     ) {
       return res.status(400).json({ message: 'Missing textUpdate values' });
     }
@@ -36,8 +38,23 @@ export default async function handler(
       const io = initSocket(res);
       console.log(updatedElement)
   
-      if(rowId[0]==='t')io.emit("task-text-updated", updatedElement,id);
-      else io.emit("column-text-updated",updatedElement, id);
+      if(rowId[0]==='t'){
+        console.log("updating",socketId);
+        emitExceptSender({
+          io:io, 
+          socketId:socketId,
+          event: "task-text-updated",
+          data:{task:updatedElement, id:id}
+        });
+      }        
+      else{ 
+        emitExceptSender({
+          io:io, 
+          socketId:socketId,
+          event: "column-text-updated",
+          data:{type:updatedElement, id:id}
+        });
+      }
       res.status(200).json({
         message: 'Patient updated successfully',
         result,

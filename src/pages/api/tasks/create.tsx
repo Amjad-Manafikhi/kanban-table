@@ -4,8 +4,9 @@ import { Task } from '@/models/database'; // Assuming Database.ts contains your 
 import { parse } from "cookie";
 import { decrypt } from "@/lib/session";
 import { v4 as uuidv4 } from 'uuid';
-import { initSocket } from '@/lib/socketServer';
+import { initSocket }   from '@/lib/socketServer';
 import { NextApiResponseServerIO } from '@/types/next';
+import { emitExceptSender } from '../helper';
 
 
 export default async function handler(
@@ -15,7 +16,7 @@ export default async function handler(
 
 
   if (req.method === 'PUT') {
-    const newTask: Task = req.body.newTask;
+    const {newTask, socketId} = req.body;
     // Validate required fields
     console.log('test1',newTask);
     if (
@@ -52,8 +53,16 @@ export default async function handler(
         idx:idx,
         company_id:1,
       }
+
+      emitExceptSender({
+        io:io, 
+        socketId:socketId,
+        event: "task-created",
+        data:NewTask
+      });
+
       
-      io.emit("task-created", NewTask);
+      
       res.status(200).json({
         message: 'task added successfully',
         result,
