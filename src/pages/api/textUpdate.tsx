@@ -3,7 +3,7 @@ import { query } from '../../lib/db';
 import type { NextApiRequest } from 'next';
 import { NextApiResponseServerIO } from '@/types/next';
 import { emitExceptSender } from './helper';
-import { Task, Task_types } from '@/models/database';
+import { Task } from '@/models/database';
 
 export default async function handler(
   req: NextApiRequest,

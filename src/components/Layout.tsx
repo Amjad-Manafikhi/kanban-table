@@ -18,7 +18,7 @@ export default function Layout({ children, setPageCompanies }: LayoutProps) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const company = router.query.company;
-  const { companies, setCompanies, reFetchSidebarCompanies, setReFetchSidebarCompanies } = useLayoutContext();
+  const { companies, setCompanies, reFetchSidebarCompanies } = useLayoutContext();
 
   useEffect(() => {
     async function setData() {
@@ -34,7 +34,7 @@ export default function Layout({ children, setPageCompanies }: LayoutProps) {
       }
     }
     setData();
-  },[company, setPageCompanies, router, reFetchSidebarCompanies]);
+  },[company, setPageCompanies, router, reFetchSidebarCompanies, setCompanies]);
 
   if(loading)return <p>Loading...</p>
 

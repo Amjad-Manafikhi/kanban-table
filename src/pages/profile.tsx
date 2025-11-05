@@ -1,9 +1,8 @@
-import Layout from "@/components/Layout"
 import PasswordUpdateForm from './../components/PasswordUpdateForm';
 import NameUpdateForm from "@/components/NameUpdateForm";
 import CreateCompany from "@/components/CreateCompany";
 import AddUserToCompany from "@/components/AddUserToCompany";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React from "react";
 import { useLayoutContext } from "@/contexts/LayoutContext";
 
 export default function Profile(){

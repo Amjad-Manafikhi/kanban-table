@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Company, Task, Task_types } from "@/models/database";
+import { Task, Task_types } from "@/models/database";
 import useFetchCompanyTasks from "@/hooks/useFetchCompanyTasks";
-import Layout from "@/components/Layout";
 import KanbanTable, { Reorder } from "@/components/KanbanTable";
 import { EditingProvider } from "@/contexts/EditingContext";
 import ColumnForm from "@/components/ColumnForm";
