@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Task, Task_types } from "@/models/database";
 import useFetchUserTasks from "@/hooks/useFetchUserTasks";
-import Layout from "@/components/Layout";
 import KanbanTable, {Reorder} from "../components/KanbanTable"
 import { EditingProvider } from "@/contexts/EditingContext";
 import ColumnForm  from "../components/ColumnForm"
@@ -28,7 +27,7 @@ export default function MyTasks() {
   return (
       
       
-        <Layout >
+        <>
             <EditingProvider>
                 <KanbanTable
                     userTasks={userTasks}
@@ -49,7 +48,7 @@ export default function MyTasks() {
                 onClick={() => setOpenForm(true)}    
             >+</button>
 
-        </Layout>
+        </>
   );
 
     

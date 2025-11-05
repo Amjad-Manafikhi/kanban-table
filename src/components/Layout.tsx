@@ -1,9 +1,10 @@
-import { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { SidebarProvider } from "./ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import Navbar from "./Navbar";
 import { Company } from "@/models/database";
 import { useRouter } from "next/router";
+import { useLayoutContext } from "@/contexts/LayoutContext";
 
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -13,12 +14,11 @@ type LayoutProps = {
   reFetchSidebarCompanies?:boolean;
 };
 
-export default function Layout({ children, setPageCompanies, reFetchSidebarCompanies }: LayoutProps) {
-  const [companies, setCompanies] = useState<Company[]>([]); // ✅ store resolved data
+export default function Layout({ children, setPageCompanies }: LayoutProps) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const company = router.query.company;
-
+  const { companies, setCompanies, reFetchSidebarCompanies, setReFetchSidebarCompanies } = useLayoutContext();
 
   useEffect(() => {
     async function setData() {
@@ -37,7 +37,9 @@ export default function Layout({ children, setPageCompanies, reFetchSidebarCompa
   },[company, setPageCompanies, router, reFetchSidebarCompanies]);
 
   if(loading)return <p>Loading...</p>
+
   return (
+    
     <SidebarProvider>
       <AppSidebar companies={companies} /> {/* ✅ pass data */}
       <main className="w-full mx-auto">
@@ -45,6 +47,7 @@ export default function Layout({ children, setPageCompanies, reFetchSidebarCompa
         <div className="flex flex-col px-10">{children}</div>
       </main>
     </SidebarProvider>
+    
   );
 }
 

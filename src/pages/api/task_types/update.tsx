@@ -34,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
     const updatedTaskTypes = (await query("SELECT * FROM task_types ORDER BY idx")) as Task_types[];
     console.log("amjad",socketId);
 
-    
+    console.log("amjad",socketId);
 
     const io = initSocket(res);
     emitExceptSender({

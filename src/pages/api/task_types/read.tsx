@@ -11,11 +11,14 @@ export default async function handler(
   
 
   if (req.method === 'GET') {
-    const { userId } = req.query
+    const { userId, company } = req.query
     try {
-      const taskTypes = await query(
-        'SELECT * FROM task_types WHERE user_id = ? order by idx', [userId]
-      );
+      const sql = userId
+        ? "SELECT * FROM tasks WHERE user_id = ? ORDER BY idx"
+        :  "SELECT * FROM tasks WHERE company_id = ? ORDER BY idx"
+      
+
+      const taskTypes = await query(sql, userId ? [userId] :  [company] );
 
       res.status(200).json(taskTypes as Task_types[]);
     } catch (error: unknown) {

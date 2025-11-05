@@ -185,3 +185,5 @@ export default function SignupPage() {
     </div>
   );
 }
+
+SignupPage.noLayout = true;
