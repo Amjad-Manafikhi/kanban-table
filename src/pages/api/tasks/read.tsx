@@ -13,12 +13,13 @@ export default async function handler(
     const {userId, company} = req.query;
        try {
       const sql = userId
-        ? "SELECT * FROM tasks WHERE user_id = ? ORDER BY idx"
-        :  "SELECT * FROM tasks WHERE company_id = ? ORDER BY idx"
+        ? "SELECT tasks.*, tags.color, tags.tag_id, tags.tag_name FROM tasks JOIN tags ON tasks.tag_id = tags.tag_id WHERE tasks.user_id = ? ORDER BY tasks.idx"
+        :  "SELECT tasks.*, tags.color, tags.tag_id, tags.tag_name FROM tasks JOIN tags ON tasks.tag_id = tags.tag_id WHERE tasks.company_id = ? ORDER BY tasks.idx;"
       
 
       const tasks = await query(sql, userId ? [userId] :  [company] );
-
+      console.log(tasks)
+      console.log(tasks);
       res.status(200).json(tasks as Task[]);
     } catch (error: unknown) {
         console.error('Error creating task:', error);

@@ -34,4 +34,12 @@ export type Task = {
     description: string;
     idx: number;
     company_id:number;
+    tag_id:string;
+    tag_name?:string;
+    color?:string;
 }
+export type Tag = {
+    tag_id:string;
+    tag_name:string;
+    color:string;
+} 

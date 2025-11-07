@@ -30,6 +30,7 @@ type Props = {
           const style = {
             transform: CSS.Transform.toString(transform),
             transition,
+            borderLeftColor:task.color
           };
 
     
@@ -57,11 +58,11 @@ type Props = {
             ref={setNodeRef} 
             style={!editingSpecs ? style : undefined} 
             {...(!editingSpecs ? attributes : {})} 
-            className={`  bg-white border-1 border-gray-400 rounded-md w-full h-22 p-1 ${transparent ? "opacity-0" : "opacity-100"}`}
+            className={`  bg-white border-2 border-l-5 ring-4 ring-gray-100 border-gray-400 rounded-md w-full h-22 p-1 ${transparent ? "opacity-0" : "opacity-100"}`}
+            
             
         >
             <div className="flex h-full w-full gap-3"> 
-                <div className="h-full border-2 rounded-full border-blue-400"></div>
 
                 <div className="flex flex-col py-2 gap-1">
                     <UpdateText initialText={task.title} queryData={titleQueryData} setLoading={setTitleLoading} id={`title-${task.task_id}`}>
@@ -72,7 +73,10 @@ type Props = {
                     </UpdateText>
                     
                 </div>
-                  <GripVertical className={`${clicking===task.task_id?"cursor-grabbing":"cursor-grab"} w-4 h-4 ml-auto mt-2 mr-2`} {...(!editingSpecs ? listeners : {})} />
+                <div className="flex ml-auto gap-3 pt-2">
+                    <div className="w-fit h-fit p-[2px] border-1 border-gray-200 bg-gray-100 rounded-sm text-xs text-gray-600 mt-0 ml-auto ">{task.tag_name}</div>
+                    <GripVertical className={`${clicking===task.task_id?"cursor-grabbing":"cursor-grab"} w-4 h-4 ml-auto mr-2`} {...(!editingSpecs ? listeners : {})} />
+                </div>
             </div>
 
         </div>

@@ -12,10 +12,11 @@ export default async function handler(
 
   if (req.method === 'GET') {
     const { userId, company } = req.query
+    console.log("amjad");
     try {
       const sql = userId
-        ? "SELECT * FROM tasks WHERE user_id = ? ORDER BY idx"
-        :  "SELECT * FROM tasks WHERE company_id = ? ORDER BY idx"
+        ? "SELECT * FROM task_types WHERE user_id = ? ORDER BY idx"
+        :  "SELECT * FROM task_types WHERE company_id = ? ORDER BY idx"
       
 
       const taskTypes = await query(sql, userId ? [userId] :  [company] );

@@ -1,7 +1,8 @@
 import { FormEvent, useState } from 'react';
 import { useRouter } from "next/router";
 import {toast} from "react-hot-toast"
-import { Task_types } from '@/models/database';
+import { Tag, Task_types } from '@/models/database';
+import useFetchUserTasks from '@/hooks/useFetchUserTasks';
 
 
 type Props={
@@ -12,7 +13,8 @@ const NEXT_PUBLIC_API_URL=process.env.NEXT_PUBLIC_API_URL;
 
 
 export default function Form( {taskTypes, typeIdMap}:Props){
-    const [ formValues, setFormValues ] = useState({title:"",description:"",type_id:taskTypes? taskTypes[0]?.type_id : ""});
+    const [ formValues, setFormValues ] = useState({title:"",description:"",type_id:taskTypes? taskTypes[0]?.type_id : "",tag_id:""});
+    const userTags = useFetchUserTasks<Tag[]>("/api/tags/read");
     const router = useRouter();
       
       
@@ -27,6 +29,7 @@ export default function Form( {taskTypes, typeIdMap}:Props){
         )
     )
       }
+      console.log(formValues.tag_id,"findme",userTags.data)
 
       console.log("qwer",typeIdMap)
       async function handleSubmit(e:  FormEvent<HTMLFormElement>){
@@ -68,9 +71,14 @@ export default function Form( {taskTypes, typeIdMap}:Props){
     }
     
 
-    const options = taskTypes?.map((type) => {
+    const typeOptions = taskTypes?.map((type) => {
         return(
             <option key={type.type_id} value={type.type_id} > {type.type_name}</option>
+        )
+    })
+    const tagOptions = userTags.data?.map((tag) => {
+        return(
+            <option key={tag.tag_id} value={tag.tag_id}>{tag.tag_name}</option>
         )
     })
 
@@ -79,22 +87,22 @@ export default function Form( {taskTypes, typeIdMap}:Props){
         <>
         <form onSubmit={(e)=>handleSubmit(e)} className="flex flex-col  p-5 w-[60%] max-w-[500px] m-auto border rounded-md" action="">
               
-            <label className="mt-2" htmlFor={"title"}>Title</label>
             <input 
                 type="text" 
                 name="title" 
                 value={formValues.title} 
                 onChange={handleChange}  
-                className="border w-full h-8 rounded-md text-sm px-3"
+                className="border w-full h-8 rounded-md mt-2 px-3"
+                placeholder='Title'
             />
 
-            <label className="mt-2" htmlFor="description">Description</label>
             <input 
                 type="text" 
                 name="description" 
                 value={formValues.description} 
                 onChange={handleChange}  
-                className="border w-full h-8 rounded-md text-sm px-3"
+                className="border w-full h-8 rounded-md  mt-6 px-3"
+                placeholder='Description'
             />
 
             
@@ -104,7 +112,15 @@ export default function Form( {taskTypes, typeIdMap}:Props){
                 defaultValue={formValues.type_id} onChange={handleChange}
                 className="border-2 p-1 mt-6 rounded-md"
             >
-                {options}
+                {typeOptions}
+            </select>
+
+            <select
+                name="tag_id" 
+                defaultValue={formValues.tag_id} onChange={handleChange}
+                className="border-2 p-1 mt-6 rounded-md"
+            >
+                {tagOptions}
             </select>
 
 

@@ -259,7 +259,7 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
 
         >
 
-            <Tools taskTypes={taskTypes} typeIdMap={typeIdMap} />
+            <Tools taskTypes={taskTypes} typeIdMap={typeIdMap} reFetch={reFetch} />
             <div id="kanban-table" className="w-full h-full bg-red pt-6" >
                 <SortableContext items={columns} strategy={horizontalListSortingStrategy}>
                     <div className="flex flex-nowrap gap-8 overflow-scroll relative w-[1000px] m-auto h-[400px] ">
