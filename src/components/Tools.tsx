@@ -3,7 +3,7 @@ import { useState } from "react";
 import Modal from "./Modal";
 import TaskForm from './TaskForm';
 import TagForm from './TagForm';
-import { Task_types } from "@/models/database";
+import { Tag, Task_types } from "@/models/database";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import ColumnForm from "./ColumnForm";
+import useFetchUserTasks from "@/hooks/useFetchUserTasks";
 
 type Props={
     taskTypes:Task_types[] | null;
@@ -24,6 +25,7 @@ export default function Tools({taskTypes, typeIdMap, reFetch}:Props){
    
     const router =useRouter();
     const { tag }=router.query;
+    const userTags = useFetchUserTasks<Tag[]>("/api/tags/read");
     const [tagParams, setTagParams] = useState(tag || "All Tags")
     const [openTaskModal, setOpenTaskModal] = useState(false);
     const [openTypeModal, setOpenTypeModal] = useState(false);
@@ -44,18 +46,20 @@ export default function Tools({taskTypes, typeIdMap, reFetch}:Props){
 
 
     return(
-        <div className="w-full mt-10 flex items-center justify-center gap-8">
+        <div className="w-full my-5 flex items-center justify-center gap-8">
 
             <form className="">
                 <select 
                     name="Price" 
                     defaultValue={tagParams} onChange={changeTag}
-                    className="border-2 p-1 rounded-md"
+                    className="border-2 p-1 rounded-md bg-white"
                 >
                     
                     <option value="all" >All Tags</option>
-                    <option value="front">Front </option>
-                    <option value="back">Back </option>
+                    { userTags?.data?.map(tag =>
+                        <option key={tag.tag_name} value={tag.tag_id} >{tag.tag_name}</option>
+                    )}
+                        
                 </select>
             </form>
             <DropdownMenu>
@@ -72,7 +76,7 @@ export default function Tools({taskTypes, typeIdMap, reFetch}:Props){
             </DropdownMenu>
 
             <Modal open={openTaskModal} setOpen={setOpenTaskModal} title={"Add New Task"}>
-                <TaskForm taskTypes={taskTypes} typeIdMap={typeIdMap}/>
+                <TaskForm taskTypes={taskTypes} typeIdMap={typeIdMap} userTags={userTags?.data}/>
             </Modal>
             <Modal open={openTypeModal} setOpen={setOpenTypeModal} title={"Add New Type"} >
                 <ColumnForm idx={taskTypes?.length} refetch={reFetch} setOpen={setOpenTypeModal}/>

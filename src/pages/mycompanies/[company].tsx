@@ -1,10 +1,8 @@
-import React, { useState } from "react";
 import { Task, Task_types } from "@/models/database";
 import useFetchCompanyTasks from "@/hooks/useFetchCompanyTasks";
 import KanbanTable, { Reorder } from "@/components/KanbanTable";
 import { EditingProvider } from "@/contexts/EditingContext";
-import ColumnForm from "@/components/ColumnForm";
-import Modal from "@/components/Modal";
+
 import { useRouter } from "next/router";
 import { useSocket } from "@/hooks/useSocket";
 import { useLayoutContext } from "@/contexts/LayoutContext";
@@ -20,7 +18,6 @@ export default function MyTasks() {
   const company = router.query.company;
   const company_id =companies?.find((item) => item.name === company)?.company_id ?? undefined;
 
-  const [OpenForm, setOpenForm] = useState(false);
   const userTaskTypes = useFetchCompanyTasks<Task_types[]>(
     "/api/task_types/read",
     company_id
@@ -47,23 +44,6 @@ export default function MyTasks() {
           deleteRow={deleteRow}
         />
       </EditingProvider>
-
-      {OpenForm && (
-        <Modal open={OpenForm} setOpen={setOpenForm} title={"Add New Type"}>
-          <ColumnForm
-            idx={userTaskTypes.data?.length}
-            refetch={userTaskTypes.reFetch}
-            setOpen={setOpenForm}
-          />
-        </Modal>
-      )}
-
-      <button
-        className="fixed bottom-8 right-8 rounded-full cursor-pointer bg-black opacity-85 shadow-md w-8 h-8 text-white"
-        onClick={() => setOpenForm(true)}
-      >
-        +
-      </button>
     </>
   );
 

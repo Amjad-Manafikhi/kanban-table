@@ -49,11 +49,13 @@ type Props = {
         transition,
       } = useSortable({id: column.type_id}); 
       
+      const height=tasks.length * 110 + 40
       const style = {
         transform: transform
         ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
         : undefined,
-        transition,
+        // transition,
+        height:`${height}px`,
       };
       
       const transparent = !dragged && clicking=== column.type_id 
@@ -62,10 +64,10 @@ type Props = {
     return(
         <div 
           ref={setNodeRef} 
-          style={!editingSpecs ? style : undefined} 
+          style={!editingSpecs ? style : {height:`${height}px`}} 
           {...(!editingSpecs ? attributes : {})} 
           
-          className={` w-[270px] p-2 rounded-md ${transparent ? "opacity-0" : "opacity-100"}`}>
+          className={` w-[270px] p-3 rounded-md bg-gray-200 duration-300 pb-[80px] ${transparent ? "opacity-0" : "opacity-100"}`}>
             <div className='flex flex-col gap-4'>
 
                 <div className='flex gap-2'>
@@ -73,7 +75,7 @@ type Props = {
                     <h1 className='font-bold -ml-1'>{nameLoading.loading === "false" ? column.type_name : nameLoading.textValue}</h1>
                   </UpdateText>
                   <p className='text-gray-500 '>({tasks.length})</p>
-                  <GripVertical className={`${clicking===column.type_id?"cursor-grabbing":"cursor-grab"} w-5 h-5 ml-auto`} {...(!editingSpecs ? listeners : {})} />
+                  <GripVertical className={`${clicking ?"cursor-grabbing":"cursor-grab"} w-5 h-5 ml-auto`} {...(!editingSpecs ? listeners : {})} />
                 </div>
 
                 <div className='flex flex-col'>

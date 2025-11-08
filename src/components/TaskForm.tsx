@@ -8,13 +8,14 @@ import useFetchUserTasks from '@/hooks/useFetchUserTasks';
 type Props={
     taskTypes:Task_types[] | null;
     typeIdMap:Record<string, number>;
+    userTags:Tag[] | null;
 }
 const NEXT_PUBLIC_API_URL=process.env.NEXT_PUBLIC_API_URL;    
 
 
-export default function Form( {taskTypes, typeIdMap}:Props){
-    const [ formValues, setFormValues ] = useState({title:"",description:"",type_id:taskTypes? taskTypes[0]?.type_id : "",tag_id:""});
-    const userTags = useFetchUserTasks<Tag[]>("/api/tags/read");
+export default function Form( {taskTypes, typeIdMap, userTags}:Props){
+    const [ formValues, setFormValues ] = useState({title:"",description:"",type_id:"",tag_id:""});
+    
     const router = useRouter();
       
       
@@ -29,7 +30,7 @@ export default function Form( {taskTypes, typeIdMap}:Props){
         )
     )
       }
-      console.log(formValues.tag_id,"findme",userTags.data)
+      console.log(formValues.tag_id,"findme",userTags)
 
       console.log("qwer",typeIdMap)
       async function handleSubmit(e:  FormEvent<HTMLFormElement>){
@@ -76,7 +77,7 @@ export default function Form( {taskTypes, typeIdMap}:Props){
             <option key={type.type_id} value={type.type_id} > {type.type_name}</option>
         )
     })
-    const tagOptions = userTags.data?.map((tag) => {
+    const tagOptions = userTags?.map((tag) => {
         return(
             <option key={tag.tag_id} value={tag.tag_id}>{tag.tag_name}</option>
         )
@@ -112,6 +113,7 @@ export default function Form( {taskTypes, typeIdMap}:Props){
                 defaultValue={formValues.type_id} onChange={handleChange}
                 className="border-2 p-1 mt-6 rounded-md"
             >
+                <option value="" disabled>Choose Type</option>
                 {typeOptions}
             </select>
 
@@ -120,6 +122,7 @@ export default function Form( {taskTypes, typeIdMap}:Props){
                 defaultValue={formValues.tag_id} onChange={handleChange}
                 className="border-2 p-1 mt-6 rounded-md"
             >
+                <option value="" disabled>Choose Tag</option>
                 {tagOptions}
             </select>
 

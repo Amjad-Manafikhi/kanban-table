@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
     DndContext,
     rectIntersection,
@@ -27,6 +27,8 @@ import { useEditingContext } from "@/contexts/EditingContext";
 import TaskRow from "./TaskRow";
 import { useSocket } from "../hooks/useSocket";
 import LiveMouseBoard from "./LiveMouserBoard";
+import { useRouter } from "next/router";
+import { cn } from "@/lib/utils";
 
 export type Reorder = {
     id: string;
@@ -63,7 +65,7 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
     };
 
 
-
+    const router=useRouter();
     const {socket,socketId} = useSocket();
     const { data: taskTypes, loading, reFetch, setState } = userTaskTypes;
     const { data: tasks, reFetch: tasksReFetch, setState: tasksSetState } = userTasks;
@@ -244,7 +246,20 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
   };
 }, [socket, socketId, setEditingSpecs, setState, taskTypes, tasks, tasksSetState]);
 
+    const { tag } = router.query
+    console.log(tag,"findme")
+    const filteredTasks = useMemo(() => {
+    return tag === "all" || tag === undefined
+        ? tasks
+        : tasks?.filter(task => task.tag_id === tag);
+    }, [tasks, tag]);
 
+    const taskTypeMap = useMemo(() => {
+    return filteredTasks?.reduce((acc, task) => {
+        acc[task.task_id] = task.type_id;
+        return acc;
+    }, {} as Record<string, string>);
+    }, [filteredTasks]);
 
     return (
         <>
@@ -260,19 +275,19 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
         >
 
             <Tools taskTypes={taskTypes} typeIdMap={typeIdMap} reFetch={reFetch} />
-            <div id="kanban-table" className="w-full h-full bg-red pt-6" >
+            <div id="kanban-table" className={` ${clicking ? "cursor-grabbing":""} w-full h-full bg-red pt-6 bg-white border-[2px]`} >
                 <SortableContext items={columns} strategy={horizontalListSortingStrategy}>
-                    <div className="flex flex-nowrap gap-8 overflow-scroll relative w-[1000px] m-auto h-[400px] ">
+                    <div className={cn("scrollbar my-scroll flex flex-nowrap gap-8 overflow-scroll relative w-[1000px] m-auto h-[400px] ")}>
                         <LiveMouseBoard/>
                         {taskTypes?.map((item) => (
-                            <div key={item.type_name} className="flex-shrink-0 w-[300px] max-h-[350px]">
+                            <div key={item.type_name} className=" flex-shrink-0 w-[300px] " >
                                 <div className="relative w-full h-screen">
                                     <Column
                                         dragged={false}
                                         clicking={clicking}
                                         column={item}
                                         reFetch={tasksReFetch}
-                                        columnTasks={tasks?.filter(task => task.type_id === item.type_id) ?? []}
+                                        columnTasks={filteredTasks?.filter(task => task.type_id === item.type_id) ?? []}
                                     />
                             </div>
                             </div>
@@ -420,15 +435,48 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
         if (typeof (active.id) === 'string' && active.id[0] === 'c') return;
 
         if (typeof (over.id) === "string" && over.id[0] === 'c') {
-            tasksSetState((prevState: FetchState<Task[]>) => {
-                if (!prevState.data) return prevState; // nothing to update
+            tasksSetState(prev => {
+                if (!prev?.data) return prev;
+            
                 updateRows([{ id: String(active.id) }], String(over.id), String(active.id));
-                return {
-                    ...prevState,
-                    data: prevState.data.map((row: Task) =>
-                        active?.id === row.task_id ? { ...row, type_id: String(over.id), idx: 0 } : row
-                    ),
+                const index = prev.data.findIndex((t: Task) => t.task_id === active?.id);
+                if (index === -1) return prev;
+
+                const updatedTask = { 
+                    ...prev.data[index], 
+                    type_id: String(over.id), 
+                    idx: 0 
                 };
+
+                const newData = [...prev.data];
+                newData[index] = updatedTask;
+
+                return { ...prev, data: newData };
+            });
+        }
+        else if(typeof (over.id) === "string" && typeof (active.id) === "string" && active.id[0] === 't' && over.id[0] === 't'){
+            const overId = taskTypeMap?.[over.id];
+            const activeId = taskTypeMap?.[active.id];
+            if(overId === activeId) return
+            
+            tasksSetState(prev => {
+                if (!prev?.data) return prev;
+                
+                updateRows([{ id: String(active.id) }], String(overId), String(active.id));
+
+                const index = prev.data.findIndex((t: Task) => t.task_id === active?.id);
+                if (index === -1) return prev;
+
+                const updatedTask = { 
+                    ...prev.data[index], 
+                    type_id: String(overId), 
+                    idx: 0 
+                };
+
+                const newData = [...prev.data];
+                newData[index] = updatedTask;
+
+                return { ...prev, data: newData };
             });
         }
     }

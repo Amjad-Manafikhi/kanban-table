@@ -51,14 +51,14 @@ type Props = {
     }
 
       const transparent = !dragged && clicking === task.task_id 
- 
+    console.log(editingSpecs,"findme")
     return (
 
         <div 
             ref={setNodeRef} 
-            style={!editingSpecs ? style : undefined} 
+            style={!editingSpecs ? style : editingSpecs.endsWith(task.task_id) ? {} : {borderLeftColor:task.color}} 
             {...(!editingSpecs ? attributes : {})} 
-            className={`  bg-white border-2 border-l-5 ring-4 ring-gray-100 border-gray-400 rounded-md w-full h-22 p-1 ${transparent ? "opacity-0" : "opacity-100"}`}
+            className={`  bg-white border-1 border-l-5 border-gray-400 rounded-sm w-full h-22 p-1 pl-2 ${transparent ? "opacity-0" : "opacity-100"}`}
             
             
         >
@@ -75,7 +75,7 @@ type Props = {
                 </div>
                 <div className="flex ml-auto gap-3 pt-2">
                     <div className="w-fit h-fit p-[2px] border-1 border-gray-200 bg-gray-100 rounded-sm text-xs text-gray-600 mt-0 ml-auto ">{task.tag_name}</div>
-                    <GripVertical className={`${clicking===task.task_id?"cursor-grabbing":"cursor-grab"} w-4 h-4 ml-auto mr-2`} {...(!editingSpecs ? listeners : {})} />
+                    <GripVertical className={`${clicking ?"cursor-grabbing":"cursor-grab"} w-4 h-4 ml-auto mr-2`} {...(!editingSpecs ? listeners : {})} />
                 </div>
             </div>
 

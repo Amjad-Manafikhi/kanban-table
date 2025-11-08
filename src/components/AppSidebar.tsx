@@ -101,10 +101,10 @@ export function AppSidebar( { companies }:Props) {
       }
 
   return (
-    <Sidebar collapsible="icon" variant="floating" className="flex flex-col justify-start items-start" >
+    <Sidebar collapsible="offcanvas" variant="sidebar" className="flex flex-col justify-start items-start border-0" >
       <SidebarHeader />
-      <SidebarContent className={cn(styles.sidebar,"")}>
-        <SidebarGroup className={" shadow-md border w-[94%] mx-auto border-gray-200 rounded-lg"}>
+      <SidebarContent className={cn(styles.sidebar,"bg-white border-0")}>
+        <SidebarGroup className={" w-[94%]  mx-auto border-b-[2px] "}>
           <SidebarGroupLabel style={{"fontSize":"1.3rem","color":"#888888"}}>Settings</SidebarGroupLabel>
           <SidebarGroupContent>
 
@@ -112,7 +112,7 @@ export function AppSidebar( { companies }:Props) {
           </SidebarGroupContent>
         </SidebarGroup>
 
-          <SidebarGroup className={" w-[94%] mx-auto border  border-gray-200 shadow-md rounded-lg"}>
+          <SidebarGroup className={" bg-white w-[94%] mx-auto border-b-[2px] "}>
             <SidebarGroupLabel style={{"fontSize":"1.3rem","color":"#888888"}}>Main Navigation</SidebarGroupLabel>
             <SidebarGroupContent>
 

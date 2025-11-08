@@ -3,8 +3,13 @@
 
 @custom-variant dark (&:is(.dark *));
 
+.my-scroll {
+  scrollbar-width: thin;        /* auto | thin | none */
+  scrollbar-color: #888 #f0f0f0; /* thumb color | track color */
+}
+
 :root {
-  --background: oklch(1 0 0);
+  --background: oklch(96.7% 0.003 264.542);
   --foreground: oklch(0.145 0 0);
   --radius: 0.625rem;
   --card: oklch(1 0 0);

@@ -1,17 +1,14 @@
-import React, { useState } from "react";
 import { Task, Task_types } from "@/models/database";
 import useFetchUserTasks from "@/hooks/useFetchUserTasks";
 import KanbanTable, {Reorder} from "../components/KanbanTable"
 import { EditingProvider } from "@/contexts/EditingContext";
-import ColumnForm  from "../components/ColumnForm"
-import Modal from "@/components/Modal";
+
 import { useSocket } from './../hooks/useSocket';
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 
 export default function MyTasks() {
 
-  const [ OpenForm, setOpenForm ] = useState(false); 
   const userTaskTypes = useFetchUserTasks<Task_types[]>("/api/task_types/read");
   const userTasks = useFetchUserTasks<Task[]>("/api/tasks/read");
   const { socketId } = useSocket();
@@ -38,15 +35,7 @@ export default function MyTasks() {
                     deleteRow={deleteRow}
                 />
             </EditingProvider>
-            {OpenForm && 
-                <Modal open={OpenForm} setOpen={setOpenForm} title={"Add New Type"} >
-                    <ColumnForm idx={userTaskTypes.data?.length} refetch={userTaskTypes.reFetch} setOpen={setOpenForm}/>
-                </Modal>
-            }
-            <button 
-                className="fixed bottom-8 right-8 rounded-full cursor-pointer bg-black opacity-85 shadow-md w-8 h-8 text-white "
-                onClick={() => setOpenForm(true)}    
-            >+</button>
+            
 
         </>
   );

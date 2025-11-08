@@ -82,7 +82,7 @@ export default function CreateCompany() {
         {...register("companyId", { valueAsNumber: true })}
         className="border-2 rounded-md bg-white p-2"
       >
-        <option value={0}>Select company</option>
+        <option value={0} disabled>Select company</option>
         {companies.map((company) => (
           <option key={company.company_id} value={company.company_id}>
             {company.name}
