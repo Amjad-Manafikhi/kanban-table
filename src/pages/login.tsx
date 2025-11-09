@@ -85,7 +85,7 @@ export default function LoginPage() {
         className="flex flex-col w-[400px] bg-gray-200 rounded-md px-6 py-8 gap-4"
       >
         <div className="flex justify-between">
-          <h1 className="">Dental Education System</h1>
+          <h1 className="">Task Management System</h1>
         </div>
         <div className='flex flex-col'>
             <input

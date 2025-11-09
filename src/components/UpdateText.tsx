@@ -131,7 +131,7 @@ export default function UpdateText({ children, initialText, queryData, setLoadin
                 animation: flash-green 1s 3 !important;
                 }
                 @keyframes flash-green {
-                0%, 100% { color: white ; }
+                0%, 100% { color: black ; }
                 50% { color: #61D345; }
                 }
             `}</style>

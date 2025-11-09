@@ -42,9 +42,9 @@ export default function Layout({ children, setPageCompanies }: LayoutProps) {
     
     <SidebarProvider>
       <AppSidebar companies={companies} /> {/* ✅ pass data */}
-      <main className="w-full mx-auto">
+      <main className="w-full mx-auto overflow-hidden">
         <Navbar />
-        <div className="flex flex-col px-10">{children}</div>
+        <div className="flex flex-col px-10 w-full h-full">{children}</div>
       </main>
     </SidebarProvider>
     
