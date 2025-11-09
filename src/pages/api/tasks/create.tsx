@@ -39,7 +39,7 @@ export default async function handler(
       // SQL query to insert a new Cases record
       const result = await query(
         'INSERT INTO tasks (task_id, user_id, type_id, title, description, created_at, idx, company_id, tag_id ) VALUES (?,?,?,?,?,?,?,?,?)',
-        [`task-${uuid}`, data?.userId, type_id, title, description, date, idx, 1, tag_id ]
+        [`task-${uuid}`, data?.userId, type_id, title, description, date, idx, 21, tag_id ]
       );
       const io = initSocket(res);
 

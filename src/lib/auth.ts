@@ -43,7 +43,8 @@ export async function signup(
    credentials: Credentials
 ){
     const { email, password, firstName, secondName } = credentials;
-
+    const saltRounds = 10;  
+    const hashedPassword = await bcrypt.hash(password,saltRounds);
     try {
         const users = await query ('select email from users where email=?', [email]) as Credentials[];
         if (users.length > 0) {
@@ -51,7 +52,18 @@ export async function signup(
             error.type = 'CredentialsSignup';
             throw error;
         }
-        await query('insert into users (email, password, firstName, secondName) values (?, ?, ?, ?)',[email, password, firstName, secondName]);
+        const colors = [
+        "#4A90E2", // Blue (Primary)
+        "#50E3C2", // Mint Green (Cyan/Teal)
+        "#F5A623", // Gold/Orange (Warning)
+        "#BD10E0", // Vivid Purple
+        "#FF69B4", // Hot Pink
+        "#7ED321", // Lime Green (Success)
+        "#9013FE", // Deep Indigo
+        "#4A4A4A"  // Dark Gray (Neutral)
+        ];      
+        const color = colors[Math.floor(Math.random() * 9)];
+        await query('insert into users (email, password, firstName, secondName, color) values (?, ?, ?, ?,?)',[email, hashedPassword, firstName, secondName, color]);
         return credentials;
     
     } catch (error) {

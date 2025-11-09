@@ -29,6 +29,7 @@ import { useSocket } from "../hooks/useSocket";
 import LiveMouseBoard from "./LiveMouserBoard";
 import { useRouter } from "next/router";
 import { cn } from "@/lib/utils";
+import ColumnSkeleton from "./ColumnSkeleton";
 
 export type Reorder = {
     id: string;
@@ -68,7 +69,7 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
     const router=useRouter();
     const {socket,socketId} = useSocket();
     const { data: taskTypes, loading, reFetch, setState } = userTaskTypes;
-    const { data: tasks, reFetch: tasksReFetch, setState: tasksSetState } = userTasks;
+    const { data: tasks, loading:tasksLoading, reFetch: tasksReFetch, setState: tasksSetState } = userTasks;
     const [columns, setColumns] = useState<Reorder[]>([]);
     const [rows, setRows] = useState<RowsReorder>();
     const [clicking, setClicking] = useState("");
@@ -263,8 +264,7 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
 
     return (
         <>
-        {loading && <p>Loading...</p>}
-        {!loading && (
+        { (
         <DndContext
             sensors={sensors}
             collisionDetection={collisionDetection}
@@ -279,19 +279,21 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
                 <SortableContext items={columns} strategy={horizontalListSortingStrategy}>
                     <div className="scrollbar my-scroll flex flex-nowrap gap-8 overflow-x-auto w-full h-full">
                         <LiveMouseBoard/>
-                        {taskTypes?.map((item) => (
-                            <div key={item.type_name} className=" flex-shrink-0 w-[300px] " >
-                                <div className="relative w-full h-screen">
-                                    <Column
-                                        dragged={false}
-                                        clicking={clicking}
-                                        column={item}
-                                        reFetch={tasksReFetch}
-                                        columnTasks={filteredTasks?.filter(task => task.type_id === item.type_id) ?? []}
-                                    />
-                            </div>
-                            </div>
-                        ))}
+                        {(loading || tasksLoading ) ? <ColumnSkeleton/> :
+                            taskTypes?.map((item) => (
+                                <div key={item.type_name} className=" flex-shrink-0 w-[300px] " >
+                                    <div className="relative w-full h-screen">
+                                        <Column
+                                            dragged={false}
+                                            clicking={clicking}
+                                            column={item}
+                                            reFetch={tasksReFetch}
+                                            columnTasks={filteredTasks?.filter(task => task.type_id === item.type_id) ?? []}
+                                        />
+                                </div>
+                                </div>
+                            ))
+                        }
                     </div>
 
                 </SortableContext>

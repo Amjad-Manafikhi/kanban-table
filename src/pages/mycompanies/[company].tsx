@@ -30,7 +30,6 @@ export default function MyTasks() {
   const { socketId } = useSocket();
   console.log("company-mytasks socketId:", socketId);
 
-  if (userTasks.loading) return <p>Loading...</p>;
 
   return (
     <>

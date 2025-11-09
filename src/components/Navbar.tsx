@@ -7,10 +7,8 @@ import { useEffect, useState } from "react";
 
 export const Navbar = () =>{
     const router= useRouter(); 
-    
-    
     const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
-
+    
     useEffect(() => {
         const isLogged = Cookies.get('loggedIn') === 'true';
         setLoggedIn(isLogged);
@@ -48,9 +46,9 @@ export const Navbar = () =>{
                 <Link href="/signup" className="">Sign up</Link>
             </div>}
 
-            {loggedIn&& <div className="flex gap-2 ml-auto mr-5">
+            {loggedIn&& <div className="flex ml-auto ">
                 <button className="" onClick={logout}>Log out</button>
-                <Link href="/dashboard" className="">dashboard</Link>
+                
             </div>}
         </header>
     )

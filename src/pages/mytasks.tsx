@@ -19,7 +19,6 @@ export default function MyTasks() {
   
 
   
-  if (userTasks.loading) return <p>Loading...</p>;
 
   return (
       

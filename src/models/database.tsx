@@ -20,11 +20,6 @@ export type Task_types = {
     idx:number;
     user_id:number;
 }
-
-export type Task_types_alignment={
-    id:number;
-}
-
 export type Task = {
     task_id: string;
     user_id: number;
@@ -43,3 +38,9 @@ export type Tag = {
     tag_name:string;
     color:string;
 } 
+
+export type User_name = {
+    firstName:string;
+    secondName:string;
+    color:string;
+}

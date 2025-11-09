@@ -3,7 +3,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import Link from 'next/link';
-import bcrypt from "bcryptjs"
 import toast from 'react-hot-toast';
 // import {
 //   Select,
@@ -23,7 +22,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         if (isLoggedIn) {
             return {
             redirect: {
-                destination: '/', 
+                destination: '/mytasks', 
                 permanent: false, 
             },
             };
@@ -70,31 +69,27 @@ export default function SignupPage() {
     if(!error)(setError(""));
     setLoading(true);
     const email = data.email;
-    const nonHashwedPassword = data.password;
+    const password = data.password;
     const firstName = data.firstName;
     const secondName = data.secondName;
-    
-    const saltRounds=10;
-    const password= await bcrypt.hash(nonHashwedPassword,saltRounds);
-
     const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, firstName, secondName }),
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, firstName, secondName }),
     });
     const result= await response.json();
     setLoading(false);
     if (response.ok) {
         setError("");
         toast.success('Logged in Successfully!')
-        router.push("/dashboard")
+        router.push("/mytasks")
     } else {
-        setError(result.error || "somthing went wrong");
-        toast.error(result.error);
-
+      setError(result.error || "somthing went wrong");
+      toast.error(result.error);
+      
     }
   };
-
+  
   return (
     <div className="flex w-screen h-screen justify-center items-center">
       <Link href={"/"} className='fixed top-4 left-4'>&larr; back to home</Link>
