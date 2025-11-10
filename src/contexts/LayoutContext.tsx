@@ -7,6 +7,8 @@ type ContextType ={
     setCompanies:React.Dispatch<React.SetStateAction<Company[]>>;
     reFetchSidebarCompanies:boolean;
     setReFetchSidebarCompanies:React.Dispatch<React.SetStateAction<boolean>> ;
+    firstName:string;
+    setFirstName:React.Dispatch<React.SetStateAction<string>>
 }
 
 
@@ -18,10 +20,11 @@ export const LayoutContext = createContext<ContextType | undefined>(undefined);
 export const LayoutProvider = ({ children }: { children: React.ReactNode }) => {
   const [companies, setCompanies] = useState<Company[]>([]); // ✅ store resolved data
   const [reFetchSidebarCompanies, setReFetchSidebarCompanies] = useState(false);
+  const [firstName, setFirstName] = useState<string|undefined>("")
 
   return (
     <>
-      <LayoutContext.Provider value={{ companies, setCompanies, reFetchSidebarCompanies, setReFetchSidebarCompanies }}>
+      <LayoutContext.Provider value={{ companies, setCompanies, reFetchSidebarCompanies, setReFetchSidebarCompanies, firstName, setFirstName }}>
         {children}
       </LayoutContext.Provider>
     </>

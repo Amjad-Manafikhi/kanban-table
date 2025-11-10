@@ -26,7 +26,7 @@ import DeleteArea from './../components/DeleteArea';
 import { useEditingContext } from "@/contexts/EditingContext";
 import TaskRow from "./TaskRow";
 import { useSocket } from "../hooks/useSocket";
-import LiveMouseBoard from "./LiveMouserBoard";
+import LiveMouseBoard from "./LiveMouseBoard";
 import { useRouter } from "next/router";
 import { cn } from "@/lib/utils";
 import ColumnSkeleton from "./ColumnSkeleton";
@@ -278,9 +278,10 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
             <div id="kanban-table" className={`${clicking ? "cursor-grabbing" : ""} w-full h-[400px] bg-white border-[2px] overflow-hidden pt-6`}>
                 <SortableContext items={columns} strategy={horizontalListSortingStrategy}>
                     <div className="scrollbar my-scroll flex flex-nowrap gap-8 overflow-x-auto w-full h-full">
-                        <LiveMouseBoard/>
                         {(loading || tasksLoading ) ? <ColumnSkeleton/> :
-                            taskTypes?.map((item) => (
+                        <>
+                        <LiveMouseBoard/>
+                            {taskTypes?.map((item) => (
                                 <div key={item.type_name} className=" flex-shrink-0 w-[300px] " >
                                     <div className="relative w-full h-screen">
                                         <Column
@@ -292,7 +293,8 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
                                         />
                                 </div>
                                 </div>
-                            ))
+                            ))}
+                        </>
                         }
                     </div>
 

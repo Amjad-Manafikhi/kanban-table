@@ -69,7 +69,7 @@ export default function LoginPage() {
         setError("");
         setLoggedIn(true);
         toast.success('Logged in Successfully!')
-        router.push("/")
+        router.push("/mytasks")
       } else {
           setError(result.error || "Somthing Went Wrong")
           toast.error(result.error);

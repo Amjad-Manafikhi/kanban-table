@@ -12,7 +12,7 @@ export default async function handler(
     try {
       const { firstName, secondName, userId} = req.body;
       const result = await query(
-      'UPDATE users SET firstName = ?, secondName = ? WHERE email = ?',
+      'UPDATE users SET firstName = ?, secondName = ? WHERE user_id = ?',
       [firstName, secondName, userId]
       );
 

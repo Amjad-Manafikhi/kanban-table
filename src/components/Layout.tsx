@@ -19,7 +19,7 @@ export default function Layout({ children, setPageCompanies }: LayoutProps) {
   const [ userName, setUserName ] = useState<User_name>();
   const router = useRouter();
   const company = router.query.company;
-  const { companies, setCompanies, reFetchSidebarCompanies } = useLayoutContext();
+  const { companies, setCompanies, reFetchSidebarCompanies, setFirstName } = useLayoutContext();
 
   useEffect(() => {
     async function setData() {
@@ -43,6 +43,7 @@ export default function Layout({ children, setPageCompanies }: LayoutProps) {
         const data = await getName(); // ✅ await here
         if (data!==undefined) {
           setUserName(data);
+          setFirstName(data.firstName);
         }
       } finally {
         setLoading(false);
