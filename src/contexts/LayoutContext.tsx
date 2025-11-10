@@ -20,7 +20,7 @@ export const LayoutContext = createContext<ContextType | undefined>(undefined);
 export const LayoutProvider = ({ children }: { children: React.ReactNode }) => {
   const [companies, setCompanies] = useState<Company[]>([]); // ✅ store resolved data
   const [reFetchSidebarCompanies, setReFetchSidebarCompanies] = useState(false);
-  const [firstName, setFirstName] = useState<string|undefined>("")
+  const [firstName, setFirstName] = useState<string>("")
 
   return (
     <>
