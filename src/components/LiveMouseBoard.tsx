@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useMouseShare } from "../hooks/useMouseShare";
 import { BsCursorFill } from "react-icons/bs";
-import { useLayoutContext } from "@/contexts/LayoutContext";
 export default function LiveMouseBoard() {
     const [userId, setUserId] = useState<number>();
-    const { firstName } = useLayoutContext();
+    
   
 
   useEffect(() => {
@@ -39,9 +38,10 @@ export default function LiveMouseBoard() {
 
   return (
     <div className=" relative z-100 " id="mouseBoard">
-      {Object.entries(otherCursors).map(([id, { x, y }]) =>
+      {Object.entries(otherCursors).map(([id, { x, y, firstName }]) =>
         (x > 0 && y > 0) ? (
           <div
+            key={id}
             className="absolute flex flex-col z-100"
             style={{ left: x, top: y, transform: "translate(-50%, -50%)" }}
           >

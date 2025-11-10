@@ -36,7 +36,7 @@ export const Navbar = () =>{
 
     
     return (
-        <header className=" w-full h-12 bg-white shadow-sm border border-l-white border-gray-100 sticky  flex flex-wrap justify-between px-16 items-center z-5">
+        <header className=" w-full h-12 bg-white border-b border-gray-200 sticky  flex flex-wrap justify-between px-16 items-center z-5">
             <div className='flex gap-4'>
                 <SidebarTrigger/>
                 <h2 className='text-lg'>Task Management System</h2>

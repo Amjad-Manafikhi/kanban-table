@@ -51,7 +51,7 @@ export default async function handler(
         io:io, 
         socketId:socketId,
         event: "task-type-created",
-        data:{element:NewTaskType}
+        data:NewTaskType
       });
       
             

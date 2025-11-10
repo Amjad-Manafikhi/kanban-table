@@ -18,7 +18,7 @@ type Props = {
   const { editingSpecs } = useEditingContext();
   const [titleLoading, setTitleLoading] = useState<TextLoading>({loading:"false",textValue:""});
   const [descriptionLoading, setDescriptionLoading] = useState<TextLoading>({loading:"false",textValue:""});
-  
+    console.log("test",task.title,task.color)
     const {
             attributes,
             listeners,

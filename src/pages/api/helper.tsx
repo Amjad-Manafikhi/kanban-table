@@ -11,7 +11,7 @@ type Props = {
   }|{
     activeId:string;
     overId:string;
-  }
+  }|Task | Task_types
 
 }
   

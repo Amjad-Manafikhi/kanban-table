@@ -59,7 +59,7 @@ export default async function handler(
         io:io, 
         socketId:socketId,
         event: "task-created",
-        data:{element:NewTask}
+        data:NewTask
       });
 
       

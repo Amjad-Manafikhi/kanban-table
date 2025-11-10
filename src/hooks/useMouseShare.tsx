@@ -1,3 +1,4 @@
+import { useLayoutContext } from "@/contexts/LayoutContext";
 import { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 
@@ -7,8 +8,9 @@ const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3000"
 let socket: Socket | null = null;
 
 export function useMouseShare(userId: number|undefined) {
-  const [otherCursors, setOtherCursors] = useState<Record<string, { x: number; y: number }>>({});
-
+  const [otherCursors, setOtherCursors] = useState<Record<string, { x: number; y: number, firstName:string }>>({});
+  const { firstName } = useLayoutContext();
+  console.log(firstName,"name")
   useEffect(() => {
     if (!socket) {
       socket = io(SOCKET_URL, {
@@ -37,6 +39,7 @@ export function useMouseShare(userId: number|undefined) {
       userId,
       x: e.clientX - rect.left + table.scrollLeft,
       y: e.clientY - rect.top + table.scrollTop,
+      firstName:firstName
     });
   };
 
@@ -48,7 +51,7 @@ export function useMouseShare(userId: number|undefined) {
     socket.on("mouse-update", (data) => {
       setOtherCursors((prev) => ({
         ...prev,
-        [data.userId]: { x: data.x, y: data.y },
+        [data.userId]: { x: data.x, y: data.y, firstName: data.firstName },
       }));
     });
 

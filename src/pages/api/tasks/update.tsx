@@ -40,7 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
 
     await Promise.all(updatePromises);
     const [updatedTask] = (await query(
-      "SELECT * FROM tasks WHERE task_id = ?",
+      "SELECT tasks.*, tags.color, tags.tag_id, tags.tag_name FROM tasks JOIN tags ON tasks.tag_id = tags.tag_id WHERE tasks.task_id = ?",
       [activeTaskId]
     )) as Task[];
     
@@ -49,7 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
       io:io, 
       socketId:socketId,
       event: "task-updated",
-      data:{element:updatedTask}
+      data:updatedTask
     });
 
     return res.status(200).json({ success: true, task:updatedTask});

@@ -142,12 +142,12 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
 
 
   // 🔹 Task updated
-  socket.on("task-updated", (task: Task) => {
-      
+  socket.on("task-updated", (task:Task) => {
+      console.log("testuser",socketId);
+      console.log("testtask-updated", task  );
       const prevTask = tasks?.find(t => t.task_id === task.task_id);
+      console.log("test",prevTask);
       if (!prevTask?.idx) return;
-      console.log("user",socketId);
-      console.log("task-updated", task);
 
     const modifier = task.idx < prevTask.idx ? 1 : -1;
     tasksSetState(prev => ({
@@ -168,7 +168,6 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
 
   // 🔹 Task created
   socket.on("task-created", (task: Task) => {
-    console.log("task-created", task);
     tasksSetState(prev => ({
       ...prev,
       data: prev.data ? [...prev.data, task] : prev.data,
@@ -176,8 +175,8 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
   });
 
   // 🔹 Task deleted
-  socket.on("task-deleted", (id: string) => {
-    console.log("task-deleted", id);
+  socket.on("task-deleted", ({id}) => {
+    console.log("test task-deleted", id);
     tasksSetState(prev => ({
       ...prev,
       data: prev.data ? prev.data.filter(t => t.task_id !== id) : prev.data,
@@ -186,8 +185,6 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
 
   // 🔹 Task type updated
   socket.on("task-type-updated", ({activeId, overId}) => {
-    console.log("task-type-updated", activeId, overId);
-
 
     const oldIndex = taskTypes?.findIndex(t => t.type_id === activeId);
     const newIndex = taskTypes?.findIndex(t => t.type_id === overId);
@@ -202,7 +199,6 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
 
   // 🔹 Task type created
   socket.on("task-type-created", (newTaskType: Task_types) => {
-    console.log("task-typeCreated",newTaskType);
     setState(prev => ({
       ...prev,
       data: prev.data ? [...prev.data, newTaskType] : prev.data,
@@ -210,7 +206,7 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
   });
 
   // 🔹 Task type deleted
-  socket.on("task-type-deleted", (id: string) => {
+  socket.on("task-type-deleted", ({id}: {id:string}) => {
     setState(prev => ({
       ...prev,
       data: prev.data ? prev.data.filter(t => t.type_id !== id) : prev.data,
