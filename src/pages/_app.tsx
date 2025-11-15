@@ -3,7 +3,7 @@ import type { AppProps } from "next/app";
 import { Toaster } from "react-hot-toast";
 import Layout from "@/components/Layout";
 import { LayoutProvider } from "@/contexts/LayoutContext";
-import { useRouter } from "next/router";
+// import { useRouter } from "next/router";
 // import  Cookies from 'js-cookie'
 
 // 👇 Extend the Next.js Page type

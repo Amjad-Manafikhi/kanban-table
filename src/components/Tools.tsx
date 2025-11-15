@@ -27,8 +27,10 @@ export default function Tools({taskTypes, typeIdMap, reFetch, company_id}:Props)
    
     const router =useRouter();
     const { tag }=router.query;
-    const userTags = company_id ? useFetchCompanyTasks<Tag[]>("/api/tags/read",company_id) : useFetchUserTasks<Tag[]>("/api/tags/read");
-    const [tagParams, setTagParams] = useState(tag || "All Tags")
+    const userTagsCompany = useFetchCompanyTasks<Tag[]>("/api/tags/read", company_id);
+    const userTagsUser = useFetchUserTasks<Tag[]>("/api/tags/read");
+    const userTags = company_id ? userTagsCompany : userTagsUser;    const [tagParams, setTagParams] = useState(tag || "All Tags")
+   
     const [openTaskModal, setOpenTaskModal] = useState(false);
     const [openTypeModal, setOpenTypeModal] = useState(false);
     const [openTagModal, setOpenTagModal] = useState(false);
