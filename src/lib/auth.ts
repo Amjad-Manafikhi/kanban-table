@@ -17,7 +17,7 @@ export async function signIn(
   try {
     const users = await query('SELECT * FROM users WHERE email = ?', [email]) as Credentials[];
 
-    if (users.length === 0) {
+    if (users?.length === 0) {
       const error = new Error('Invalid email or password') as Error & {type:string};
       error.type = 'CredentialsSignin';
       throw error;
@@ -47,7 +47,7 @@ export async function signup(
     const hashedPassword = await bcrypt.hash(password,saltRounds);
     try {
         const users = await query ('select email from users where email=?', [email]) as Credentials[];
-        if (users.length > 0) {
+        if (users?.length > 0) {
             const error = new Error('this email is used before') as Error & {type:string};
             error.type = 'CredentialsSignup';
             throw error;

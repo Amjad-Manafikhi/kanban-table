@@ -15,12 +15,13 @@ export default async function handler(
     const session = cookies.session; // your encrypted token
     const data = session? await decrypt(session):null;
     const userId = data?.userId
+    const company_id=req.query.company;
     try {
-      const sql = "SELECT T.tag_id, T.tag_name, T.color FROM tags T JOIN users U ON T.user_id = U.user_id WHERE U .user_id = ?"
-        
+      const sql = company_id ?"SELECT tag_id, tag_name, color FROM tags WHERE company_id = ?":
+        "SELECT tag_id, tag_name, color FROM tags WHERE user_id = ?"
       
-
-      const companies = await query(sql, [userId]  );
+      console.log({company_id})
+      const companies = await query(sql, company_id ? [company_id] : [userId] );
 
       res.status(200).json(companies as Company[]);
     } catch (error: unknown) {

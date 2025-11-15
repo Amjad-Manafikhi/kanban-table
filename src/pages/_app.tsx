@@ -3,9 +3,8 @@ import type { AppProps } from "next/app";
 import { Toaster } from "react-hot-toast";
 import Layout from "@/components/Layout";
 import { LayoutProvider } from "@/contexts/LayoutContext";
-import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import  Cookies from 'js-cookie'
+// import  Cookies from 'js-cookie'
 
 // 👇 Extend the Next.js Page type
 export type NextPageWithLayout = AppProps["Component"] & {
@@ -17,7 +16,7 @@ type AppPropsWithLayout = AppProps & {
 };
 
 export default function App({ Component, pageProps }: AppPropsWithLayout) {
-  const router = useRouter();
+  // const router = useRouter();
   // const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
 
   // useEffect(() => {

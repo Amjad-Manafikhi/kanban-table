@@ -48,7 +48,7 @@ type Props = {
         transform,
         transition,
       } = useSortable({id: column.type_id}); 
-      const height=tasks.length * 110 + 40
+      const height=tasks?.length * 110 + 40
       const style = {
         transform: transform
         ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
@@ -73,7 +73,7 @@ type Props = {
                   <UpdateText initialText={column.type_name} queryData={nameQueryData} setLoading={setNameLoading} id={`name-${column.type_id}`}>
                     <h1 className='font-bold -ml-1'>{nameLoading.loading === "false" ? column.type_name : nameLoading.textValue}</h1>
                   </UpdateText>
-                  <p className='text-gray-500 '>({tasks.length})</p>
+                  <p className='text-gray-500 '>({tasks?.length})</p>
                   <GripVertical className={`${clicking ?"cursor-grabbing":"cursor-grab"} w-5 h-5 ml-auto`} {...(!editingSpecs ? listeners : {})} />
                 </div>
 

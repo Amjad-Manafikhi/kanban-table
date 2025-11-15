@@ -17,12 +17,12 @@ export default async function handler(
     const session = cookies.session; // your encrypted token
     const sessionData = session? await decrypt(session):null;
     const userId = sessionData?.userId;
-    const { tagName, color } = req.body.newTag;
+    const { tagName, color, company_id } = req.body.newTag;
     const uuid = uuidv4(); 
     // Validate required fields
     if (
       tagName  === undefined ||
-      color  === undefined
+      color  === undefined 
     ) {
       console.log(tagName, color)
       return res.status(400).json({ message: 'Missing user_company values' });
@@ -31,8 +31,8 @@ export default async function handler(
 
       // SQL query to insert a new Cases record
       const result = await query(
-        'INSERT INTO tags (tag_id, tag_name, color, user_id ) VALUES (?,?,?,?)',
-        [uuid, tagName, color, userId ]
+        'INSERT INTO tags (tag_id, tag_name, color, user_id, company_id ) VALUES (?,?,?,?,?)',
+        [uuid, tagName, color, company_id ? 17 : userId, company_id||21 ]
       );
 
       res.status(200).json({

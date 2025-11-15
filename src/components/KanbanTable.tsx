@@ -28,7 +28,6 @@ import TaskRow from "./TaskRow";
 import { useSocket } from "../hooks/useSocket";
 import LiveMouseBoard from "./LiveMouseBoard";
 import { useRouter } from "next/router";
-import { cn } from "@/lib/utils";
 import ColumnSkeleton from "./ColumnSkeleton";
 
 export type Reorder = {
@@ -50,10 +49,11 @@ type Props = {
     updateRows: (newItems: Reorder[], overColumnId: string, activeTaskId: string) => Promise<void>;
     deleteColumn: (id: string) => Promise<void>;
     deleteRow: (id: string) => Promise<void>;
+    company_id?:number;
 
 
 }
-export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, updateRows, deleteColumn, deleteRow }: Props) {
+export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, updateRows, deleteColumn, deleteRow, company_id }: Props) {
 
     const collisionDetection: CollisionDetection = (args) => {
         const intersections = rectIntersection(args);
@@ -100,7 +100,7 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
     );
 
     function countTypeIds(tasks: Task[] | null) {
-        if (!Array.isArray(tasks) || tasks.length === 0) {
+        if (!Array.isArray(tasks) || tasks?.length === 0) {
             return {};
         }
 
@@ -270,7 +270,7 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
 
         >
 
-            <Tools taskTypes={taskTypes} typeIdMap={typeIdMap} reFetch={reFetch} />
+            <Tools taskTypes={taskTypes} typeIdMap={typeIdMap} reFetch={reFetch} company_id={company_id} />
             <div id="kanban-table" className={`${clicking ? "cursor-grabbing" : ""} w-full h-[400px] bg-white border-[2px] overflow-hidden pt-6`}>
                 <SortableContext items={columns} strategy={horizontalListSortingStrategy}>
                     <div className="scrollbar my-scroll flex flex-nowrap gap-8 overflow-x-auto w-full h-full">
@@ -326,7 +326,7 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
                     ) : null)
                 }
             </DragOverlay>
-            <DeleteArea isDragging={clicking.length > 0 ? true : false} />
+            <DeleteArea isDragging={clicking?.length > 0 ? true : false} />
 
         </DndContext>)}
         </>

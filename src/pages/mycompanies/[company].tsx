@@ -41,6 +41,7 @@ export default function MyTasks() {
           updateRows={updateRows}
           deleteColumn={deleteColumn}
           deleteRow={deleteRow}
+          company_id={company_id}
         />
       </EditingProvider>
     </>

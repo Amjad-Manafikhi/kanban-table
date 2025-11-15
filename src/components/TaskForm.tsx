@@ -2,18 +2,18 @@ import { FormEvent, useState } from 'react';
 import { useRouter } from "next/router";
 import {toast} from "react-hot-toast"
 import { Tag, Task_types } from '@/models/database';
-import useFetchUserTasks from '@/hooks/useFetchUserTasks';
 
 
-type Props={
+type Props = {
     taskTypes:Task_types[] | null;
     typeIdMap:Record<string, number>;
     userTags:Tag[] | null;
+    company_id?:number;
 }
 const NEXT_PUBLIC_API_URL=process.env.NEXT_PUBLIC_API_URL;    
 
 
-export default function Form( {taskTypes, typeIdMap, userTags}:Props){
+export default function Form( {taskTypes, typeIdMap, userTags, company_id}:Props){
     const [ formValues, setFormValues ] = useState({title:"",description:"",type_id:"",tag_id:""});
     
     const router = useRouter();
@@ -48,6 +48,7 @@ export default function Form( {taskTypes, typeIdMap, userTags}:Props){
                     ...formValues,
                     type_id:formValues.type_id,
                     idx:typeIdMap[formValues.type_id]+1 || 1,
+                    company_id:company_id,
                 }
                 }),
             });
@@ -55,7 +56,7 @@ export default function Form( {taskTypes, typeIdMap, userTags}:Props){
             const data = await res.json();
             
             if (res.ok) {
-                router.reload();
+            router.reload();
             toast.success('Submited Successfully!')
             console.log('created:', data);
             // Optionally refresh state or re-fetch patients here
@@ -78,6 +79,7 @@ export default function Form( {taskTypes, typeIdMap, userTags}:Props){
         )
     })
     const tagOptions = userTags?.map((tag) => {
+        
         return(
             <option key={tag.tag_id} value={tag.tag_id}>{tag.tag_name}</option>
         )

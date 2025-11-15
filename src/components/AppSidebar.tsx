@@ -26,7 +26,7 @@ import {
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
-import {useRef, useState} from "react"
+import {useState} from "react"
 import { Company, User_name } from "@/models/database";
 
 type SidebarElement={

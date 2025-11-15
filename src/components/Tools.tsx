@@ -8,24 +8,26 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
+//   DropdownMenuLabel,
+//   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import ColumnForm from "./ColumnForm";
 import useFetchUserTasks from "@/hooks/useFetchUserTasks";
+import useFetchCompanyTasks from "@/hooks/useFetchCompanyTasks";
 
 type Props={
     taskTypes:Task_types[] | null;
     typeIdMap:Record<string, number>
     reFetch:() => Promise<unknown>;
+    company_id?:number;
 }
 
-export default function Tools({taskTypes, typeIdMap, reFetch}:Props){
+export default function Tools({taskTypes, typeIdMap, reFetch, company_id}:Props){
    
     const router =useRouter();
     const { tag }=router.query;
-    const userTags = useFetchUserTasks<Tag[]>("/api/tags/read");
+    const userTags = company_id ? useFetchCompanyTasks<Tag[]>("/api/tags/read",company_id) : useFetchUserTasks<Tag[]>("/api/tags/read");
     const [tagParams, setTagParams] = useState(tag || "All Tags")
     const [openTaskModal, setOpenTaskModal] = useState(false);
     const [openTypeModal, setOpenTypeModal] = useState(false);
@@ -76,13 +78,13 @@ export default function Tools({taskTypes, typeIdMap, reFetch}:Props){
             </DropdownMenu>
 
             <Modal open={openTaskModal} setOpen={setOpenTaskModal} title={"Add New Task"}>
-                <TaskForm taskTypes={taskTypes} typeIdMap={typeIdMap} userTags={userTags?.data}/>
+                <TaskForm taskTypes={taskTypes} typeIdMap={typeIdMap} userTags={userTags?.data} company_id={company_id}/>
             </Modal>
             <Modal open={openTypeModal} setOpen={setOpenTypeModal} title={"Add New Type"} >
-                <ColumnForm idx={taskTypes?.length} refetch={reFetch} setOpen={setOpenTypeModal}/>
+                <ColumnForm idx={taskTypes?.length} refetch={reFetch} setOpen={setOpenTypeModal} company_id={company_id}/>
             </Modal>
-            <Modal open={openTagModal} setOpen={setOpenTagModal} title={"Add New Tag"}>
-                <TagForm />
+            <Modal open={openTagModal} setOpen={setOpenTagModal} title={"Add New Tag"} >
+                <TagForm company_id={company_id}/>
             </Modal>
         </div>
 

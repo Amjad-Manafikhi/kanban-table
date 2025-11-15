@@ -7,10 +7,11 @@ import toast from 'react-hot-toast';
 type Props = {
     idx:number | undefined;
     refetch:() => Promise<unknown>;
-    setOpen:React.Dispatch<React.SetStateAction<boolean>>;   
+    setOpen:React.Dispatch<React.SetStateAction<boolean>>;  
+    company_id?:number; 
 }
 
-export default function ColumnForm({idx, refetch, setOpen}:Props){
+export default function ColumnForm({idx, refetch, setOpen, company_id}:Props){
 
     const [ loading, setLoading ] = useState(false);
 
@@ -40,7 +41,7 @@ export default function ColumnForm({idx, refetch, setOpen}:Props){
         const response = await fetch('/api/task_types/create', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ typeName, idx:length }),
+            body: JSON.stringify({ typeName, idx:length, company_id:company_id }),
         });
         setLoading(false);
         if (response.ok) {

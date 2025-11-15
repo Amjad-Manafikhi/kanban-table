@@ -1,17 +1,13 @@
 import { FormEvent, useState } from 'react';
 import { useRouter } from "next/router";
 import {toast} from "react-hot-toast"
-import { Task_types } from '@/models/database';
 
 
 type Props={
-    taskTypes:Task_types[] | null;
-    typeIdMap:Record<string, number>;
+    company_id?:number;
 }
-const NEXT_PUBLIC_API_URL=process.env.NEXT_PUBLIC_API_URL;    
 
-
-export default function Form(){
+export default function Form({ company_id }: Props){
     const [ formValues, setFormValues ] = useState({tagName:""});
     const colors = [
     "#4A90E2", // Blue (Primary)
@@ -24,7 +20,6 @@ export default function Form(){
     "#4A4A4A"  // Dark Gray (Neutral)
     ];
     const [choosenColor, setChoosenColor] = useState(colors[0]); 
-    const router = useRouter();
       
       
       function handleChange(e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>){
@@ -44,7 +39,7 @@ export default function Form(){
           
           
           try {
-              const res = await fetch(NEXT_PUBLIC_API_URL+'/api/tags/create', {
+              const res = await fetch('/api/tags/create', {
                   method: 'PUT',
                   headers: {
                       'Content-Type': 'application/json',
@@ -52,7 +47,8 @@ export default function Form(){
             body: JSON.stringify({ 
                 newTag:{
                     color:choosenColor,
-                    tagName:formValues.tagName
+                    tagName:formValues.tagName,
+                    company_id:company_id,
                 }
                 }),
             });
@@ -60,7 +56,6 @@ export default function Form(){
             const data = await res.json();
             
             if (res.ok) {
-                router.reload();
             toast.success('Submited Successfully!')
             console.log('created:', data);
             // Optionally refresh state or re-fetch patients here

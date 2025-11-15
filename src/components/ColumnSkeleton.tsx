@@ -1,6 +1,6 @@
 export default function ColumnSkeleton() {
   return (
-    <div className="flex gap-16">
+    <div className="flex gap-16 px-8">
       {[1, 2, 3].map((i) => (
         <div
           key={i}

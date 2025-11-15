@@ -16,12 +16,13 @@ export default async function handler(
 
     try {
       const { oldPassword, newPassword, userId} = req.body;
+      console.log(userId,"email");
       
       const users =await query(
-        'select password from users where email = ? ', [userId] 
+        'select password from users where user_id = ? ', [userId] 
       ) as User[];
       
-      if(users.length===0){
+      if(users?.length===0){
         const error = new Error('Invalid email or password') as Error & {type:string};
         error.type = 'CredentialsSignin';
         throw error;

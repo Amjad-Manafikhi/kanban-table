@@ -15,23 +15,25 @@ type LayoutProps = {
 };
 
 export default function Layout({ children, setPageCompanies }: LayoutProps) {
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
+  
   const [ userName, setUserName ] = useState<User_name>();
   const router = useRouter();
   const company = router.query.company;
   const { companies, setCompanies, reFetchSidebarCompanies, setFirstName } = useLayoutContext();
+  console.log({companies});
 
   useEffect(() => {
     async function setData() {
       try {
         const data = await getCompanies(); // ✅ await here
         if (data!==undefined) {
-          if(company && typeof(company) === 'string' && data.findIndex((item) => item.name === company)) router.push("/404");
+          if(company && typeof(company) === 'string' && data.findIndex((item) => item.name === company)===null) router.push("/404");
           setCompanies(data);
           if(setPageCompanies)setPageCompanies(data)
         }
       } finally {
-        setLoading(false);
+        // setLoading(false);
       }
     }
     setData();
@@ -46,11 +48,11 @@ export default function Layout({ children, setPageCompanies }: LayoutProps) {
           setFirstName(data.firstName);
         }
       } finally {
-        setLoading(false);
+        // setLoading(false);
       }
     }
     setName();
-  },[company, setPageCompanies, router, reFetchSidebarCompanies, setCompanies]);
+  },[company, setPageCompanies, router, reFetchSidebarCompanies, setCompanies, setFirstName]);
 
 
   return (

@@ -22,7 +22,7 @@ export default async function handler(
       );
       console.log(userEmail);
 
-      const userId =  Array.isArray(result) && result.length > 0 ?
+      const userId =  Array.isArray(result) && result?.length > 0 ?
        "user_id" in result[0] ? result[0].user_id : null 
        : null;
 

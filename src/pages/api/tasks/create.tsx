@@ -30,16 +30,17 @@ export default async function handler(
     }
     const date = new Date
     try {
-      const { type_id, title, description, idx, tag_id } = newTask;
+      const { type_id, title, description, idx, tag_id, company_id } = newTask;
       const cookies = parse(req.headers.cookie || "");
       const session = cookies.session; // your encrypted token
       const data = session? await decrypt(session):null;
+      const userId = data?.userId;
       const uuid = uuidv4();
 
       // SQL query to insert a new Cases record
       const result = await query(
         'INSERT INTO tasks (task_id, user_id, type_id, title, description, created_at, idx, company_id, tag_id ) VALUES (?,?,?,?,?,?,?,?,?)',
-        [`task-${uuid}`, data?.userId, type_id, title, description, date, idx, 21, tag_id ]
+        [`task-${uuid}`, company_id ? 17 : userId, type_id, title, description, date, idx, company_id || 21, tag_id ]
       );
       const io = initSocket(res);
 

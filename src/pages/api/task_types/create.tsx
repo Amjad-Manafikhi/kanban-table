@@ -27,16 +27,17 @@ export default async function handler(
     }
 
     try {
-      const { typeName, idx, socketId} = data;
+      const { typeName, idx, socketId, company_id} = data;
       const cookies = parse(req.headers.cookie || "");
       const session = cookies.session; // your encrypted token
       const sessionData = session? await decrypt(session):null;
+      const userId = sessionData?.userId; 
       const uuid = uuidv4(); 
 
       // SQL query to insert a new Cases record
       const result = await query(
-        'INSERT INTO task_types (type_id, type_name, idx, user_id) VALUES (?,?,?,?)',
-        [`column-${uuid}`, typeName ,idx, sessionData?.userId]
+        'INSERT INTO task_types (type_id, type_name, idx, user_id, company_id) VALUES (?,?,?,?,?)',
+        [`column-${uuid}`, typeName ,idx, company_id ? 17 : userId, company_id || 21]
       );
 
       const NewTaskType :Task_types={
