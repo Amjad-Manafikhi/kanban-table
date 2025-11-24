@@ -3,7 +3,23 @@ import useFetchUserTasks from "@/hooks/useFetchUserTasks";
 import KanbanTable, {Reorder} from "../components/KanbanTable"
 import { EditingProvider } from "@/contexts/EditingContext";
 import { useSocket } from './../hooks/useSocket';
+import { GetServerSidePropsContext } from "next";
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+export async function getServerSideProps(ctx:GetServerSidePropsContext) {
+  const token = ctx.req.cookies.session;
+
+  if (!token) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
+}
 
 
 export default function MyTasks() {

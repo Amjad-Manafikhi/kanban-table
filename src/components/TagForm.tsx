@@ -1,12 +1,18 @@
-import { FormEvent, useState } from 'react';
+import { Dispatch, FormEvent, SetStateAction, useState } from 'react';
 import {toast} from "react-hot-toast"
 
 
 type Props={
     company_id?:number;
+    reFetch: (() => Promise<void>) | (() => Promise<{
+    data: null;
+    loading: boolean;
+    error: null;
+} | undefined>)
+    setOpen:Dispatch<SetStateAction<boolean>>;
 }
 
-export default function Form({ company_id }: Props){
+export default function Form({ company_id, reFetch, setOpen }: Props){
     const [ formValues, setFormValues ] = useState({tagName:""});
     const colors = [
     "#4A90E2", // Blue (Primary)
@@ -57,6 +63,8 @@ export default function Form({ company_id }: Props){
             if (res.ok) {
             toast.success('Submited Successfully!')
             console.log('created:', data);
+            reFetch();
+            setOpen(false);
             // Optionally refresh state or re-fetch patients here
             } else {
                 toast.error(`Error Creating task`)

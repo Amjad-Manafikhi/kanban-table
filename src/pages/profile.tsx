@@ -4,6 +4,23 @@ import CreateCompany from "@/components/CreateCompany";
 import AddUserToCompany from "@/components/AddUserToCompany";
 import React from "react";
 import { useLayoutContext } from "@/contexts/LayoutContext";
+import { GetServerSidePropsContext } from 'next';
+
+export async function getServerSideProps(ctx:GetServerSidePropsContext) {
+  const token = ctx.req.cookies.session;
+
+  if (!token) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
+}
+
 
 export default function Profile(){
 

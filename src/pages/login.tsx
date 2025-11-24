@@ -4,26 +4,25 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {z} from "zod"
 import toast  from 'react-hot-toast';
 import Link from 'next/link';
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
 
 
-    export const getServerSideProps: GetServerSideProps = async (context) => {
-        const isLoggedIn = context.req.cookies.loggedIn === 'true'; 
-        
-        if (isLoggedIn) {
-            return {
-            redirect: {
-                destination: '/login', 
-                permanent: false, 
-            },
-            };
-        }
 
-        return {
-            props: {}, 
-        };
+export async function getServerSideProps(ctx:GetServerSidePropsContext) {
+  const token = ctx.req.cookies.session;
+
+  if (token) {
+    return {
+      redirect: {
+        destination: "/mytasks",
+        permanent: false,
+      },
     };
+  }
+
+  return { props: {} };
+}
 
 
 

@@ -11,27 +11,25 @@ import toast from 'react-hot-toast';
 //   SelectTrigger,
 //   SelectValue,
 // } from "@/components/ui/select"
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
 
 
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-        const isLoggedIn = context.req.cookies.loggedIn === 'true'; 
+export async function getServerSideProps(ctx:GetServerSidePropsContext) {
+  const token = ctx.req.cookies.session;
 
-        if (isLoggedIn) {
-            return {
-            redirect: {
-                destination: '/mytasks', 
-                permanent: false, 
-            },
-            };
-        }
-
-        return {
-            props: {}, 
-        };
+  if (token) {
+    return {
+      redirect: {
+        destination: "/mytasks",
+        permanent: false,
+      },
     };
+  }
+
+  return { props: {} };
+}
 
 
 
