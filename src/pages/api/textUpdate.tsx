@@ -1,4 +1,3 @@
-import { initSocket }  from '@/lib/socketServer';
 import { query } from '../../lib/db';
 import type { NextApiRequest } from 'next';
 import { NextApiResponseServerIO } from '@/types/next';
@@ -33,13 +32,11 @@ export default async function handler(
       const updatedElement = (await query(`SELECT * FROM ${tableName} WHERE ${rowIdName} = ?`, [rowId])) as Task[];
       
       
-      const io = initSocket(res);
       console.log(updatedElement)
   
       if(rowId[0]==='t'){
         console.log("updating",socketId);
         emitExceptSender({
-          io:io, 
           socketId:socketId,
           event: "task-text-updated",
           data:{element:updatedElement[0], id:id}
@@ -47,7 +44,6 @@ export default async function handler(
       }        
       else{ 
         emitExceptSender({
-          io:io, 
           socketId:socketId,
           event: "column-text-updated",
           data:{element:updatedElement[0], id:id}
