@@ -13,13 +13,14 @@ type Props = {
   }|Task | Task_types
 
 }
+const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3001/"
   
   
   export async function emitExceptSender({ socketId, event, data }: Props) {
   // const res = await fetch("http://localhost:3001/")
   // const data2=await res.json();
 
-  const res = await fetch('http://localhost:3001/', {
+  const res = await fetch(SOCKET_URL, {
     method: 'PUT',
     headers: {
         'Content-Type': 'application/json',

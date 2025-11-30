@@ -39,7 +39,7 @@ export function useMouseShare(userId: number|undefined) {
 
     if (!inside){
       console.log("sockettestmouse")
-      socket?.emit("mouse-leave", userId);
+      if(userId && otherCursors[userId])socket?.emit("mouse-leave", userId);
       return;
     } // don’t emit if outside
     socket?.emit("mouse-move", {
