@@ -1,4 +1,3 @@
-import { initSocket }  from '@/lib/socketServer';
 import { query } from '../../../lib/db'; // Adjust path if needed
 import type { NextApiRequest } from 'next';
 import { NextApiResponseServerIO } from '@/types/next';
@@ -18,9 +17,7 @@ export default async function handler(
     try {
       const result = await query('DELETE FROM tasks WHERE task_id = ?', [id]);
 
-      const io = initSocket(res);
       emitExceptSender({
-        io:io, 
         socketId:socketId,
         event: "task-deleted",
         data:{id}

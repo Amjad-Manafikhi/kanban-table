@@ -1,6 +1,5 @@
 import type { NextApiRequest } from "next";
 import { query } from "@/lib/db"; // your mysql2 helper
-import { initSocket }  from "@/lib/socketServer";
 import { NextApiResponseServerIO } from "@/types/next";
 
 import { emitExceptSender } from "../helper";
@@ -36,9 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
 
     console.log("amjad",socketId);
 
-    const io = initSocket(res);
     emitExceptSender({
-      io:io, 
       socketId:socketId,
       event: "task-type-updated",
       data:{activeId,overId}

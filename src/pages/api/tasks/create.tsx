@@ -4,7 +4,6 @@ import { Task } from '@/models/database'; // Assuming Database.ts contains your 
 import { parse } from "cookie";
 import { decrypt } from "@/lib/session";
 import { v4 as uuidv4 } from 'uuid';
-import { initSocket }   from '@/lib/socketServer';
 import { NextApiResponseServerIO } from '@/types/next';
 import { emitExceptSender } from '../helper';
 
@@ -42,7 +41,6 @@ export default async function handler(
         'INSERT INTO tasks (task_id, user_id, type_id, title, description, created_at, idx, company_id, tag_id ) VALUES (?,?,?,?,?,?,?,?,?)',
         [`task-${uuid}`, company_id ? 17 : userId, type_id, title, description, date, idx, company_id || 21, tag_id ]
       );
-      const io = initSocket(res);
 
       const NewTask :Task={
         task_id:`task-${uuid}`,
@@ -57,7 +55,6 @@ export default async function handler(
       }
 
       emitExceptSender({
-        io:io, 
         socketId:socketId,
         event: "task-created",
         data:NewTask

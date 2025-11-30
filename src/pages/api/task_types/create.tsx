@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { decrypt } from '@/lib/session';
 import { parse } from 'cookie';
 import { NextApiResponseServerIO } from '@/types/next';
-import { initSocket }   from '@/lib/socketServer';
 import { Task_types } from '@/models/database';
 import { emitExceptSender } from '../helper';
 
@@ -47,9 +46,7 @@ export default async function handler(
               idx:idx,
             }
 
-      const io = initSocket(res);
       emitExceptSender({
-        io:io, 
         socketId:socketId,
         event: "task-type-created",
         data:NewTaskType

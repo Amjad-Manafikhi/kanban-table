@@ -2,7 +2,7 @@ import { useLayoutContext } from "@/contexts/LayoutContext";
 import { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 
-const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3000";
+const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL;
 
 // Single socket instance
 let socket: Socket | null = null;
@@ -14,15 +14,21 @@ export function useMouseShare(userId: number|undefined) {
   useEffect(() => {
     if (!socket) {
       socket = io(SOCKET_URL, {
-        path: "/api/socket_io",
+        path: "/socket_io",
         transports: ["websocket"], // force WebSocket
+        reconnection: true,
+        reconnectionAttempts: 10,
+        reconnectionDelay: 1000,
       });
+      console.log(socket,"sockettestfalse")
     }
+    console.log(socket,"sockettest")
 
     
   const table = document.querySelector<HTMLDivElement>("#kanban-table");;
   const handleMouseMove = (e: MouseEvent) => {
     if (!table) return;
+    
 
     const rect = table.getBoundingClientRect();
     const inside =
@@ -32,6 +38,7 @@ export function useMouseShare(userId: number|undefined) {
       e.clientY <= rect.bottom;
 
     if (!inside){
+      console.log("sockettestmouse")
       socket?.emit("mouse-leave", userId);
       return;
     } // don’t emit if outside

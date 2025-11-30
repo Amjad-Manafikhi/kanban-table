@@ -31,7 +31,7 @@ export const LayoutProvider = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
-export function useLayoutContext() {
+export function   useLayoutContext() {
   const specs = useContext(LayoutContext);
 
   if (specs === undefined) {

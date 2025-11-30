@@ -2,7 +2,6 @@ import { Task, Task_types } from "@/models/database";
 import { DefaultEventsMap, Server } from "socket.io";
 
 type Props = {
-  io:Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>;
   socketId:string;
   event:string;
   data:{
@@ -16,17 +15,33 @@ type Props = {
 }
   
   
-  export function emitExceptSender({ io, socketId, event, data }: Props) {
-    console.log("emitExceptSender called with socketId:", socketId);
-    console.log("Connected sockets:", Array.from(io.sockets.sockets.keys()));
+  export async function emitExceptSender({ socketId, event, data }: Props) {
+  // const res = await fetch("http://localhost:3001/")
+  // const data2=await res.json();
 
-    const senderSocket = io.sockets.sockets.get(socketId);
+  const res = await fetch('http://localhost:3001/', {
+    method: 'PUT',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ 
+        socketId,
+        event,
+        data,
+        }),
+  });
+  
 
-    if (senderSocket) {
-      console.log(`Broadcasting (excluding sender ${socketId})`);
-      senderSocket.broadcast.emit(event, data);
-    } else {
-      console.log("No sender found, using io.emit()");
-      io.emit(event, data);
-    }
+    // console.log("emitExceptSender called with socketId:", socketId);
+    // console.log("Connected sockets:", Array.from(io.sockets.sockets.keys()));
+
+    // const senderSocket = io.sockets.sockets.get(socketId);
+
+    // if (senderSocket) {
+    //   console.log(`Broadcasting (excluding sender ${socketId})`);
+    //   senderSocket.broadcast.emit(event, data);
+    // } else {
+    //   console.log("No sender found, using io.emit()");
+    //   io.emit(event, data);
+    // }
   }
