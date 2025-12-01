@@ -29,7 +29,8 @@ export async function decrypt(token: string): Promise<SessionPayload | null> {
       algorithms: ['HS256'],
     });
     return payload as SessionPayload;
-  } catch {
+  } catch(error) {
+    console.log("failed to verify session");
     return null;
   }
 }
