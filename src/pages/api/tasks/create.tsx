@@ -50,17 +50,12 @@ export default async function handler(
         [`task-${uuid}`, company_id ? 17 : userId, type_id, title, description, date, idx, company_id || 21, tag_id ]
       );
 
-      const NewTask :Task={
-        task_id:`task-${uuid}`,
-        user_id:data?.userId || 0,
-        type_id:type_id,
-        title:title,
-        description:description,
-        date:date,
-        idx:idx,
-        company_id:1,
-        tag_id:tag_id,
-      }
+      const [NewTask] = (await query(
+      "SELECT tasks.*, tags.color, tags.tag_id, tags.tag_name FROM tasks JOIN tags ON tasks.tag_id = tags.tag_id WHERE tasks.task_id = ?",
+      [`task-${uuid}`]
+    )) as Task[];
+
+      
 
       emitExceptSender({
         socketId:socketId,

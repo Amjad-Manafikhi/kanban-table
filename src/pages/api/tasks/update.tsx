@@ -3,7 +3,7 @@ import type { NextApiResponseServerIO } from './../../../types/next.d.ts';
 import { query } from "@/lib/db"; // your mysql2 helper
 import { emitExceptSender } from "../helper";
 import { Task } from "@/models/database.jsx";
-import apiAuth from "@/lib/apiAuth.js";
+import apiAuth from "@/lib/apiAuth";
 
 
 
@@ -54,6 +54,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
       event: "task-updated",
       data:updatedTask
     });
+    
 
     return res.status(200).json({ success: true, task:updatedTask});
   } catch (error) {

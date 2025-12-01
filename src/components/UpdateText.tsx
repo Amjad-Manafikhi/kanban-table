@@ -53,6 +53,9 @@ export default function UpdateText({ children, initialText, queryData, setLoadin
 
     // 1. State to manage the current text value
   const [text, setText] = useState(initialText);
+  useEffect(() => {
+    setText(initialText);     // sync when parent changes
+  }, [initialText]);
  
   // 3. Ref to focus the input field when edit mode starts
   const inputRef = useRef<HTMLInputElement>(null);

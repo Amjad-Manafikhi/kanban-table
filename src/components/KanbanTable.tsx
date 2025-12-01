@@ -143,8 +143,7 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
 
   // 🔹 Task updated
   socket.on("task-updated", (task:Task) => {
-      console.log("testuser",socketId);
-      console.log("testtask-updated", task  );
+      
       const prevTask = tasks?.find(t => t.task_id === task.task_id);
       console.log("test",prevTask);
       if (!prevTask?.idx) return;
@@ -170,13 +169,12 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
   socket.on("task-created", (task: Task) => {
     tasksSetState(prev => ({
       ...prev,
-      data: prev.data ? [...prev.data, task] : prev.data,
+      data: prev.data ? [...prev.data, task] : [task],
     }));
   });
 
   // 🔹 Task deleted
   socket.on("task-deleted", ({id}) => {
-    console.log("test task-deleted", id);
     tasksSetState(prev => ({
       ...prev,
       data: prev.data ? prev.data.filter(t => t.task_id !== id) : prev.data,
@@ -216,9 +214,10 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
   // 🔹 Task text updated
   socket.on("task-text-updated", ({element, id}) => {
     setEditingSpecs(id);
+    console.log(element,"text")
     tasksSetState(prev => ({
       ...prev,
-      data: prev.data ? prev.data.map(t => (t.task_id === element.task_id ? element : t)) : prev.data,
+      data: prev.data ? prev.data.map(t => (t.task_id === element.task_id ? {...t, ...element} : t)) : prev.data,
     }));
   });
 
