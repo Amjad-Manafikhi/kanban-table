@@ -1,6 +1,8 @@
 import bcrypt from 'bcryptjs';
 import { query } from '../../../../lib/db';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { decrypt } from '@/lib/session';
+import { parse } from 'cookie';
 
 type User = {
     password:string;
@@ -11,15 +13,20 @@ export default async function handler(
   res: NextApiResponse<{ message: string; result?: unknown; error?: string }>
 ) {
   if (req.method === 'POST') {
-
+    const cookies = parse(req.headers.cookie || "");
+    const session = cookies.session; // your encrypted token
+    const data = session? await decrypt(session):null;
+    const sessionUserId = data?.userId;
 
 
     try {
-      const { oldPassword, newPassword, userId} = req.body;
-      console.log(userId,"email");
+      const { oldPassword, newPassword } = req.body;
+      if(!sessionUserId){
+        return res.status(401).json({ message: 'Unauthorized' }); 
+      }
       
       const users =await query(
-        'select password from users where user_id = ? ', [userId] 
+        'select password from users where user_id = ? ', [sessionUserId] 
       ) as User[];
       
       if(users?.length===0){
@@ -36,8 +43,8 @@ export default async function handler(
       }
 
       const result = await query(
-      'UPDATE users SET password = ? WHERE email = ?',
-      [newPassword, userId]
+      'UPDATE users SET password = ? WHERE user_id = ?',
+      [newPassword, sessionUserId]
       );
 
       res.status(200).json({

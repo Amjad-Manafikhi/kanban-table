@@ -1,3 +1,4 @@
+import apiAuth from '@/lib/apiAuth';
 import { query } from '../../lib/db'; // Adjust path if needed
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -7,6 +8,12 @@ export default async function handler(
 ) {
 
   if (req.method === 'POST') {
+
+    const authorized = await apiAuth(req);
+        if(!authorized){
+          return res.status(401).json({ message: 'Unauthorized' }); 
+    }
+
     const { companyId, userEmail } = req.body;
 
     // ✅ Validate required fields

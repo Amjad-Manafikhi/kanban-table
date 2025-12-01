@@ -6,9 +6,14 @@ const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL;
 let socketInstance: Socket | null = null;
 
 export function useSocket() {
-  const [socket] = useState<Socket | null>(() => {
+  const [socket, setSocket] = useState<Socket | null>(null);
+  const [socketId, setSocketId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
     if (!socketInstance) {
-      socketInstance = io(SOCKET_URL, {
+      socketInstance = io(SOCKET_URL!, {
         path: "/socket_io",
         transports: ["websocket"],
         reconnection: true,
@@ -16,10 +21,10 @@ export function useSocket() {
         reconnectionDelay: 1000,
       });
     }
-    return socketInstance;
-  });
 
-  const [socketId, setSocketId] = useState<string | null>(null);
+    setSocket(socketInstance);
+    if(socketInstance?.id)setSocketId(socketInstance.id);
+  }, []);
 
   useEffect(() => {
     if (!socket) return;
@@ -29,8 +34,8 @@ export function useSocket() {
       console.log("Connected:", socket.id);
     };
 
-    const handleReconnect = (attempt: number) => {
-      console.log("Reconnected after attempts:", attempt, "New id:", socket.id);
+    const handleReconnect = () => {
+      console.log("Reconnected. New id:", socket.id);
       setSocketId(socket.id ?? "");
     };
 

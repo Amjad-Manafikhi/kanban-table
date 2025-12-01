@@ -1,27 +1,9 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
-import Cookies from "js-cookie";
-import {jwtDecode} from "jwt-decode";
 
-// Type for decoded token payload
-type SessionPayload = {
-  userId: number;
-  // Add more fields here if needed (like email, role, etc.)
-};
-
-// Decode function (client-side only, not secure for auth)
-function decodeSessionToken(token: string): SessionPayload | null {
-  try {
-    const decoded = jwtDecode<SessionPayload>(token);
-    return decoded;
-  } catch (err) {
-    console.error("Failed to decode token:", err);
-    return null;
-  }
-}
 
 // Form schema
 const formSchema = z.object({
@@ -34,18 +16,6 @@ type FormSchemaType = z.infer<typeof formSchema>;
 export default function NameUpdateForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [userId, setUserId] = useState("");
-
-  // Read token and decode userId
-  useEffect(() => {
-    const token = Cookies.get("session");
-    if (!token) return;
-
-    const payload = decodeSessionToken(token);
-    if (payload?.userId) {
-      setUserId(payload.userId.toString());
-    }
-  }, []);
 
   const {
     register,
@@ -62,7 +32,7 @@ export default function NameUpdateForm() {
     const response = await fetch("/api/auth/users/updateName", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ firstName, secondName, userId }),
+      body: JSON.stringify({ firstName, secondName }),
     });
 
     const result = await response.json();

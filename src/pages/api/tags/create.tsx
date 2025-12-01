@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { decrypt } from '@/lib/session';
 import { parse } from 'cookie';
 import { v4 as uuidv4 } from 'uuid';
+import apiAuth from '@/lib/apiAuth';
 
 
 
@@ -13,6 +14,11 @@ export default async function handler(
 
 
   if (req.method === 'PUT') {
+    const authorized = await apiAuth(req);
+    if(!authorized){
+      return res.status(401).json({ message: 'Unauthorized' }); 
+    }
+
     const cookies = parse(req.headers.cookie || "");
     const session = cookies.session; // your encrypted token
     const sessionData = session? await decrypt(session):null;

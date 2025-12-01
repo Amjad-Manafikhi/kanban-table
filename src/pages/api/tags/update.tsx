@@ -1,10 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { query } from "@/lib/db"; // your mysql2 helper
+import apiAuth from "@/lib/apiAuth";
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "PUT") {
     return res.status(405).json({ message: "Method not allowed" });
+  }
+
+  const authorized = await apiAuth(req);
+    if(!authorized){
+      return res.status(401).json({ message: 'Unauthorized' }); 
   }
   try {
 

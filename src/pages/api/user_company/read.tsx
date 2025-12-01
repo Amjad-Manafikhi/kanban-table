@@ -7,7 +7,7 @@ import { Company } from '@/models/database';
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Company[] | { message: string; error: string }>
+  res: NextApiResponse<Company[] | { message: string; error?: string }>
 ) {
   
   if (req.method === 'GET') {
@@ -15,8 +15,11 @@ export default async function handler(
     const session = cookies.session; // your encrypted token
     const data = session? await decrypt(session):null;
     const userId = data?.userId
+    if(!userId){
+        return res.status(401).json({ message: 'Unauthorized' }); 
+      }
     try {
-      const sql = "SELECT C.name, C.company_id FROM companies C JOIN user_company UC ON C.company_id = UC.company_id WHERE UC.user_id = ?"
+      const sql = "SELECT C.name, C.company_id, C.owner_id FROM companies C JOIN user_company UC ON C.company_id = UC.company_id WHERE UC.user_id = ?"
         
       
 

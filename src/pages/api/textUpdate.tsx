@@ -3,14 +3,22 @@ import type { NextApiRequest } from 'next';
 import { NextApiResponseServerIO } from '@/types/next';
 import { emitExceptSender } from './helper';
 import { Task } from '@/models/database';
+import apiAuth from '@/lib/apiAuth';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponseServerIO
 ) {
   if (req.method === 'PUT') {
+
+    const authorized = await apiAuth(req);
+        if(!authorized){
+          return res.status(401).json({ message: 'Unauthorized' }); 
+    }
+
     const { rowId, value, tableName, columnName, rowIdName, socketId} = req.body.queryData;
     const { id } =req.body;
+    console.log(req.body.queryData,"test")
     if (
       !rowId ||
       !rowIdName ||

@@ -16,7 +16,7 @@ export default async function handler(
     const data = session? await decrypt(session):null;
     const userId = data?.userId
     try {
-      const sql = "SELECT * from companies where user_id = ?"
+      const sql = "SELECT * from companies where owner_id = ?"
         
       
 

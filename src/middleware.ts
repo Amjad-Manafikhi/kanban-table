@@ -1,6 +1,6 @@
-import { parse } from "cookie";
 import { NextRequest, NextResponse } from "next/server";
 import { decrypt } from "./lib/session";
+import { parse } from "cookie";
 
 const protectedRoutes = ["/", "/mytasks", "/companies"]
 const publicRoutes = ["/login", "/signup"];
@@ -11,15 +11,17 @@ export default async function middleware(req:NextRequest){
     const isProtectedRoute = protectedRoutes.includes(path);
     const isPublicRoute = publicRoutes.includes(path);
 
-    const cookies = req.cookies.get("loggedIn")?.value
-    console.log(cookies,"cookie");
+    const cookies = req?.cookies.get("session") ;
+    // your encrypted token
+    //const sessionData = cookies? await decrypt(cookies?.value):null;
+    const session = cookies?.value;
     
     
-    if(isProtectedRoute && !cookies) {
+    if(isProtectedRoute && !session) {
         return NextResponse.redirect(new URL("/login",req.nextUrl));
     }
 
-    if(isPublicRoute && cookies) {
+    if(isPublicRoute && session) {
         return NextResponse.redirect(new URL("/",req.nextUrl));
     }
 

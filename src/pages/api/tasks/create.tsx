@@ -6,6 +6,7 @@ import { decrypt } from "@/lib/session";
 import { v4 as uuidv4 } from 'uuid';
 import { NextApiResponseServerIO } from '@/types/next';
 import { emitExceptSender } from '../helper';
+import apiAuth from '@/lib/apiAuth';
 
 
 export default async function handler(
@@ -15,6 +16,13 @@ export default async function handler(
 
 
   if (req.method === 'PUT') {
+
+    const authorized = await apiAuth(req);
+      if(!authorized){
+        return res.status(401).json({ message: 'Unauthorized' }); 
+    }
+
+
     const {newTask, socketId} = req.body;
     // Validate required fields
     console.log('test1',newTask);

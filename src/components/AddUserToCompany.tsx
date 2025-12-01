@@ -44,7 +44,10 @@ export default function CreateCompany() {
     const response = await fetch("/api/addUserToCompany", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        ...data,
+        ownerId:companies.find(company=>{company.company_id===data.companyId})?.owner_id
+      }),
     });
 
     const result = await response.json();

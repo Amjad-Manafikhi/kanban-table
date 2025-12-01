@@ -1,5 +1,7 @@
+import { parse } from 'cookie';
 import { query } from '../../../../lib/db';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { decrypt } from '@/lib/session';
 
 export default async function handler(
   req: NextApiRequest,
@@ -7,13 +9,19 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
 
-
+    const cookies = parse(req.headers.cookie || "");
+    const session = cookies.session; // your encrypted token
+    const data = session? await decrypt(session):null;
+    const sessionUserId = data?.userId;
 
     try {
-      const { firstName, secondName, userId} = req.body;
+      const { firstName, secondName} = req.body;
+      if(!sessionUserId){
+        return res.status(401).json({ message: 'Unauthorized' }); 
+      }
       const result = await query(
       'UPDATE users SET firstName = ?, secondName = ? WHERE user_id = ?',
-      [firstName, secondName, userId]
+      [firstName, secondName, sessionUserId]
       );
 
       res.status(200).json({

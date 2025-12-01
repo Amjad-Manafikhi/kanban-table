@@ -1,5 +1,7 @@
+import { parse } from 'cookie';
 import { query } from '../../../lib/db'; // Adjust path if needed
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { decrypt } from '@/lib/session';
 
 
 
@@ -10,7 +12,17 @@ export default async function handler(
 
 
   if (req.method === 'POST') {
-    const { companyId, userId } = req.body;
+    const { companyId, userId, ownerId } = req.body;
+
+    const cookies = parse(req.headers.cookie || "");
+    const session = cookies.session; // your encrypted token
+    const data = session? await decrypt(session):null;
+    const sessionUserId = data?.userId;
+
+    if(sessionUserId!==parseInt(ownerId)){
+      return res.status(401).json({ message: 'Unauthorized' }); 
+    }
+
     // Validate required fields
     if (
       companyId  === undefined ||

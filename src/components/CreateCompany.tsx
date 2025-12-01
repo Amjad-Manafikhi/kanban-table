@@ -34,7 +34,7 @@ type Props = {
 }
 export default function CreateCOmpany({setReFetchSidebarCompanies}:Props) {
   const [loading, setLoading] = useState(false);
-  const [userId, setUserId] = useState("");
+  const [userId, setUserId] = useState<number>();
 
   // Read token and decode userId
   useEffect(() => {
@@ -43,7 +43,7 @@ export default function CreateCOmpany({setReFetchSidebarCompanies}:Props) {
 
     const payload = decodeSessionToken(token);
     if (payload?.userId) {
-      setUserId(payload.userId.toString());
+      setUserId(payload.userId);
     }
   }, []);
 
@@ -71,7 +71,7 @@ export default function CreateCOmpany({setReFetchSidebarCompanies}:Props) {
     const response2 = await fetch("/api/user_company/create", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ companyId, userId }),
+      body: JSON.stringify({ companyId, userId, ownerId:userId }),
     });
     const result2 = await response2.json();
 

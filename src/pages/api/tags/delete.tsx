@@ -1,3 +1,4 @@
+import apiAuth from '@/lib/apiAuth';
 import { query } from '../../../lib/db'; // Adjust path if needed
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -6,6 +7,13 @@ export default async function handler(
   res: NextApiResponse<{ message: string; result?: unknown; error?: string }>
 ) {
   if (req.method === 'DELETE') {
+
+    const authorized = await apiAuth(req);
+      if(!authorized){
+        return res.status(401).json({ message: 'Unauthorized' }); 
+    }
+
+
     const { id } = req.body;
     if (!id) {
       return res.status(400).json({ message: 'Missing company ID' });

@@ -1,16 +1,24 @@
 import { query } from '../../../lib/db'; // Adjust path if needed
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Task_types } from '@/models/database';
+import apiAuth from '@/lib/apiAuth';
 
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Task_types[] | { message: string; error: string }>
+  res: NextApiResponse<Task_types[] | { message: string; error?: string }>
 ) {
+
+
 
   
 
   if (req.method === 'GET') {
+
+    const authorized = await apiAuth(req);
+      if(!authorized){
+        return res.status(401).json({ message: 'Unauthorized' }); 
+    }
     const { userId, company } = req.query
     console.log("amjad");
     try {

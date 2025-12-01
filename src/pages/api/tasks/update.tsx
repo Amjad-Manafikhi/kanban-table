@@ -3,6 +3,7 @@ import type { NextApiResponseServerIO } from './../../../types/next.d.ts';
 import { query } from "@/lib/db"; // your mysql2 helper
 import { emitExceptSender } from "../helper";
 import { Task } from "@/models/database.jsx";
+import apiAuth from "@/lib/apiAuth.js";
 
 
 
@@ -10,6 +11,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
   
   if (req.method !== "PUT") {
     return res.status(405).json({ message: "Method not allowed" });
+  }
+
+  const authorized = await apiAuth(req);
+    if(!authorized){
+      return res.status(401).json({ message: 'Unauthorized' }); 
   }
   console.log("updating..");
   try {

@@ -1,3 +1,4 @@
+import apiAuth from '@/lib/apiAuth';
 import { query } from '../../lib/db'; // Adjust path if needed
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -10,6 +11,10 @@ export default async function handler(
 
 
   if (req.method === 'POST') {
+    const authorized = await apiAuth(req);
+          if(!authorized){
+            return res.status(401).json({ message: 'Unauthorized' }); 
+    }
     const {companyName, userId}= req.body;
     // Validate required fields
     if (
@@ -22,7 +27,7 @@ export default async function handler(
 
       // SQL query to insert a new Cases record
       const result = await query(
-        'INSERT INTO companies (name, user_id) VALUES (?,?)',
+        'INSERT INTO companies (name, owner_id) VALUES (?,?)',
         [companyName, userId]
       );
       

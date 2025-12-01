@@ -7,6 +7,7 @@ export type User = {
 export type Company = {
     company_id: number;
     name: string;
+    owner_id:number;
 }
 
 export type User_company = {

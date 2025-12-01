@@ -3,12 +3,19 @@ import type { NextApiRequest } from 'next';
 import { NextApiResponseServerIO } from '@/types/next';
 
 import { emitExceptSender } from '../helper';
+import apiAuth from '@/lib/apiAuth';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponseServerIO
 ) {
   if (req.method === 'DELETE') {
+
+    const authorized = await apiAuth(req);
+      if(!authorized){
+        return res.status(401).json({ message: 'Unauthorized' }); 
+    }
+
     const { id, socketId } = req.body;
     if (!id) {
       return res.status(400).json({ message: 'Missing task ID' });

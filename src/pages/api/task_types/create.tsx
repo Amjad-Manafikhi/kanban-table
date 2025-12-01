@@ -6,6 +6,7 @@ import { parse } from 'cookie';
 import { NextApiResponseServerIO } from '@/types/next';
 import { Task_types } from '@/models/database';
 import { emitExceptSender } from '../helper';
+import apiAuth from '@/lib/apiAuth';
 
 export default async function handler(
   req: NextApiRequest,
@@ -15,6 +16,11 @@ export default async function handler(
 
   if (req.method === 'PUT') {
     const data = req.body;
+
+    const authorized = await apiAuth(req);
+      if(!authorized){
+        return res.status(401).json({ message: 'Unauthorized' }); 
+    }
 
     // Validate required fields
     if (
