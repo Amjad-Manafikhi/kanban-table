@@ -27,7 +27,6 @@ export default async function handler(
       const sql = company_id ?"SELECT tag_id, tag_name, color FROM tags WHERE company_id = ?":
         "SELECT tag_id, tag_name, color FROM tags WHERE user_id = ?"
       
-      console.log({company_id})
       const companies = await query(sql, company_id ? [company_id] : [userId] );
 
       res.status(200).json(companies as Company[]);

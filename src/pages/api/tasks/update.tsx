@@ -17,13 +17,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
     if(!authorized){
       return res.status(401).json({ message: 'Unauthorized' }); 
   }
-  console.log("updating..");
   try {
     
 
     
     const { alignments, overColumnId, activeTaskId, socketId} = req.body;
-    console.log("bnbnb",alignments);
     
     const updatePromises = alignments.map((alignment:{id:string}, index:number) => {
       const val = alignment?.id;

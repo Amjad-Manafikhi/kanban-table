@@ -59,7 +59,6 @@ type Props = {
       };
       
       const transparent = !dragged && clicking=== column.type_id 
-    console.log(column.type_name);
 
     return(
         <div 

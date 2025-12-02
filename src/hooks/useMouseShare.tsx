@@ -10,7 +10,6 @@ let socket: Socket | null = null;
 export function useMouseShare(userId: number|undefined) {
   const [otherCursors, setOtherCursors] = useState<Record<string, { x: number; y: number, firstName:string }>>({});
   const { firstName } = useLayoutContext();
-  console.log(firstName,"name")
   useEffect(() => {
     if (!socket) {
       socket = io(SOCKET_URL, {
@@ -20,9 +19,7 @@ export function useMouseShare(userId: number|undefined) {
         reconnectionAttempts: 10,
         reconnectionDelay: 1000,
       });
-      console.log(socket,"sockettestfalse")
     }
-    console.log(socket,"sockettest")
 
     
   const table = document.querySelector<HTMLDivElement>("#kanban-table");;
@@ -38,7 +35,6 @@ export function useMouseShare(userId: number|undefined) {
       e.clientY <= rect.bottom;
 
     if (!inside){
-      console.log("sockettestmouse")
       if(userId && otherCursors[userId])socket?.emit("mouse-leave", userId);
       return;
     } // don’t emit if outside

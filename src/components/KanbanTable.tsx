@@ -80,7 +80,6 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
             setColumns(taskTypes.map((type) => ({ id: type.type_id })));
         }
     }, [taskTypes]);
-    console.log("qw",taskTypes)
 
     useEffect(() => {
         if (tasks) {
@@ -146,7 +145,6 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
   socket.on("task-updated", (task:Task) => {
       
       const prevTask = tasks?.find(t => t.task_id === task.task_id);
-      console.log("test",prevTask);
       if (!prevTask?.idx) return;
 
     const modifier = task.idx < prevTask.idx ? 1 : -1;
@@ -215,7 +213,6 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
   // 🔹 Task text updated
   socket.on("task-text-updated", ({element, id}) => {
     setEditingSpecs(id);
-    console.log(element,"text")
     tasksSetState(prev => ({
       ...prev,
       data: prev.data ? prev.data.map(t => (t.task_id === element.task_id ? {...t, ...element} : t)) : prev.data,
@@ -244,7 +241,6 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
 }, [socket, socketId, setEditingSpecs, setState, taskTypes, tasks, tasksSetState]);
 
     const { tag } = router.query
-    console.log(tag,"findme")
     const filteredTasks = useMemo(() => {
     return tag === "all" || tag === undefined
         ? tasks
@@ -381,14 +377,11 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
                 const colNewIndex = columns?.findIndex((i) => i.id === over.id);
                 const updatedColumns = arrayMove(columns, colOldIndex, colNewIndex)
                 setColumns(updatedColumns);
-                console.log('updatedd', oldIndex, newIndex);
-                console.log("amajd", taskTypes, updatedColumns, columns);
                // if (taskTypes !== null && oldIndex !== undefined && newIndex !== undefined) console.log("updateddd", arrayMove(taskTypes, oldIndex, newIndex))
                 if (taskTypes !== null && oldIndex !== undefined && newIndex !== undefined) setState((prev) => ({ ...prev, data: prev.data ? arrayMove(prev.data, oldIndex, newIndex) : prev.data }));
 
                 if (typeof over.id === "string") {
                     const updated = await updateColumns(updatedColumns, active.id, over.id);
-                    console.log("testing",updated);
                     
                 }
             }
@@ -398,7 +391,6 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
                 if (!newColumn) return;
                 const oldIndex = rows[newColumn].findIndex((i) => i.id === active.id);
                 const newIndex = rows[newColumn].findIndex((i) => i.id === over.id);
-                console.log("qq", oldIndex, newIndex);
                 const newRows = arrayMove(rows[newColumn], oldIndex, newIndex);
                 setRows(prev => ({ ...prev, [newColumn]: newRows }));
                 if (tasks !== null) {
@@ -407,7 +399,6 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
                     const reorderedTasks = newRows
                         .map(row => taskMap.get(row.id))
                         .filter((task): task is Task => !!task && task.type_id === newColumn);
-                    console.log('ww', newRows, reorderedTasks)
 
                     tasksSetState(prev => ({
                         ...prev,
@@ -421,7 +412,6 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
                             : reorderedTasks,
                     }));
                 }
-                console.log('ww', tasks);
                 await updateRows(newRows, String(newColumn), String(active.id));
 
                 tasksReFetch();
@@ -433,7 +423,6 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
     function handleDragOver(event: DragOverEvent) {
         if (editingSpecs) return;
         const { active, over } = event;
-        console.log("test2", over?.id);
         if (!over) return;
         if (typeof (active.id) === 'string' && active.id[0] === 'c') return;
 

@@ -27,7 +27,6 @@ export default async function handler(
         'SELECT user_id FROM users WHERE email = ?',
         [userEmail]
       );
-      console.log(userEmail);
 
       const userId =  Array.isArray(result) && result?.length > 0 ?
        "user_id" in result[0] ? result[0].user_id : null 

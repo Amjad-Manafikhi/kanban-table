@@ -18,7 +18,6 @@ export default async function handler(
 
     const { rowId, value, tableName, columnName, rowIdName, socketId} = req.body.queryData;
     const { id } =req.body;
-    console.log(req.body.queryData,"test")
     if (
       !rowId ||
       !rowIdName ||
@@ -40,10 +39,8 @@ export default async function handler(
       const updatedElement = (await query(`SELECT * FROM ${tableName} WHERE ${rowIdName} = ?`, [rowId])) as Task[];
       
       
-      console.log(updatedElement)
   
       if(rowId[0]==='t'){
-        console.log("updating",socketId);
         emitExceptSender({
           socketId:socketId,
           event: "task-text-updated",

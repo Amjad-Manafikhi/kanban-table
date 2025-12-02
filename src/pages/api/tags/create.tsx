@@ -30,7 +30,6 @@ export default async function handler(
       tagName  === undefined ||
       color  === undefined 
     ) {
-      console.log(tagName, color)
       return res.status(400).json({ message: 'Missing user_company values' });
     }
     try {

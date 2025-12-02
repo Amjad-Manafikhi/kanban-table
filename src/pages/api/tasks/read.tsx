@@ -24,8 +24,6 @@ export default async function handler(
       
 
       const tasks = await query(sql, userId ? [userId] :  [company] );
-      console.log(tasks)
-      console.log(tasks);
       res.status(200).json(tasks as Task[]);
     } catch (error: unknown) {
         console.error('Error creating task:', error);

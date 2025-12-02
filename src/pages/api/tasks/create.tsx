@@ -25,7 +25,6 @@ export default async function handler(
 
     const {newTask, socketId} = req.body;
     // Validate required fields
-    console.log('test1',newTask);
     if (
       
       newTask.idx === undefined ||

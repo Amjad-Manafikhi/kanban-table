@@ -11,7 +11,6 @@ export default function MyTasks() {
   const userTaskTypes = useFetchUserTasks<Task_types[]>("/api/task_types/read");
   const userTasks = useFetchUserTasks<Task[]>("/api/tasks/read");
   const { socketId } = useSocket();
-  console.log("usermytasks",socketId)
   
 
 

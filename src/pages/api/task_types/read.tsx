@@ -20,7 +20,6 @@ export default async function handler(
         return res.status(401).json({ message: 'Unauthorized' }); 
     }
     const { userId, company } = req.query
-    console.log("amjad");
     try {
       const sql = userId
         ? "SELECT * FROM task_types WHERE user_id = ? ORDER BY idx"

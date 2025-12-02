@@ -18,7 +18,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
     
     
     const { alignments , activeId, overId, socketId} = req.body;
-    console.log("task_type",alignments,activeId,overId)
 
     const updatePromises = alignments.map((alignment:{id:string}, index:number) => {
       const val = alignment?.id;
@@ -33,12 +32,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
 
     await Promise.all(updatePromises);
 
-    console.log("tre");
 
     const updatedTaskTypes = (await query("SELECT * FROM task_types ORDER BY idx")) as Task_types[];
-    console.log("amjad",socketId);
-
-    console.log("amjad",socketId);
 
     emitExceptSender({
       socketId:socketId,

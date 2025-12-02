@@ -21,7 +21,6 @@ export default function Layout({ children, setPageCompanies }: LayoutProps) {
   const router = useRouter();
   const company = router.query.company;
   const { companies, setCompanies, reFetchSidebarCompanies, setFirstName } = useLayoutContext();
-  console.log({companies});
 
   useEffect(() => {
     async function setData() {

@@ -21,7 +21,6 @@ export default async function handler(
       
 
       const userName = await query(sql, [userId]);
-      console.log("name",userName);
 
       res.status(200).json(userName as User_name[]);
     } catch (error: unknown) {

@@ -28,7 +28,6 @@ export default function MyTasks() {
   );
 
   const { socketId } = useSocket();
-  console.log("company-mytasks socketId:", socketId);
 
 
   return (

@@ -17,7 +17,6 @@ type Props = {
  function TaskRow({id, clicking, task, dragged, tasksSetState }:Props){
     
   const { editingSpecs } = useEditingContext();
-    console.log("test",task.title,task.color)
     const {
             attributes,
             listeners,
@@ -50,7 +49,6 @@ type Props = {
     }
 
       const transparent = !dragged && clicking === task.task_id 
-    console.log(editingSpecs,"findme")
     return (
 
         <div 

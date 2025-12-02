@@ -41,7 +41,6 @@ type Props ={
 
   const triggerFlash = () => {
     setFlash(true);
-    console.log("trigger2")
     if (flashTimeout.current) clearTimeout(flashTimeout.current);
     flashTimeout.current = setTimeout(() => setFlash(false), 2500); // matches animation length
   };
@@ -96,7 +95,6 @@ type Props ={
         socketId:socketId
         
       }, id, setState, tasksSetState)
-      console.log("trigger");
       triggerFlash();
     }
       setChangedValue(false);

@@ -30,9 +30,7 @@ export default function Form( {taskTypes, typeIdMap, userTags, company_id}:Props
         )
     )
       }
-      console.log(formValues.tag_id,"findme",userTags)
 
-      console.log("qwer",typeIdMap)
       async function handleSubmit(e:  FormEvent<HTMLFormElement>){
           e.preventDefault();
           
