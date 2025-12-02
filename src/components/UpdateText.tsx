@@ -1,13 +1,11 @@
 import { useEditingContext } from '@/contexts/EditingContext';
+import { FetchState } from '@/hooks/useFetchUserTasks';
 import { useSocket } from '@/hooks/useSocket';
+import { Task, Task_types } from '@/models/database';
 import React, { useState, useRef, useEffect, ReactNode } from 'react';
 import toast from 'react-hot-toast';
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export type TextLoading = {
-    loading:string;
-    textValue:string;
-} 
 
 export type QueryData = {
     tableName:string;
@@ -22,12 +20,13 @@ type Props ={
     children:ReactNode;
     initialText:string;
     queryData:QueryData;
-    setLoading: React.Dispatch<React.SetStateAction<TextLoading>>;
     id:string;
+    tasksSetState?:React.Dispatch<React.SetStateAction<FetchState<Task[]>>> 
+    setState?:React.Dispatch<React.SetStateAction<FetchState<Task_types[]>>> 
 } 
 
 
-export default function UpdateText({ children, initialText, queryData, setLoading, id}:Props) {
+ function UpdateText({ children, initialText, queryData, id, setState, tasksSetState}:Props) {
     
   const { editingSpecs, setEditingSpecs } = useEditingContext();
   const [ editing, setEditing ] = useState(false);
@@ -38,10 +37,13 @@ export default function UpdateText({ children, initialText, queryData, setLoadin
 
   const [flash, setFlash] = useState(false);
 
+  const flashTimeout = useRef<NodeJS.Timeout | null>(null);
+
   const triggerFlash = () => {
     setFlash(true);
-    setTimeout(() => {setFlash(false);  }, 2500); // 3 cycles × 0.5s
-    
+    console.log("trigger2")
+    if (flashTimeout.current) clearTimeout(flashTimeout.current);
+    flashTimeout.current = setTimeout(() => setFlash(false), 2500); // matches animation length
   };
 
   useEffect(()=>{
@@ -81,21 +83,24 @@ export default function UpdateText({ children, initialText, queryData, setLoadin
   };
 
   // Handler to save changes and exit edit mode
-  const handleSave = (triggerFlash:() => void) => {
+  const handleSave = async (triggerFlash:() => void) => {
     setEditingSpecs("");
     setEditing(false);
     if(changedValue===true){
-        triggerFlash();
-        updateText({ 
+      await updateText({ 
         rowId:queryData.rowId,
         rowIdName:queryData.rowIdName,
         value: text, 
         tableName:queryData.tableName,
         columnName:queryData.columnName,
-        socketId:socketId,
+        socketId:socketId
+        
+      }, id, setState, tasksSetState)
+      console.log("trigger");
+      triggerFlash();
+    }
+      setChangedValue(false);
 
-    },setLoading, id)}
-    setChangedValue(false);
   }
  
 
@@ -127,8 +132,8 @@ export default function UpdateText({ children, initialText, queryData, setLoadin
         />
       ) : (
         // DISPLAY MODE: Show the text, activate edit on double-click
-        <div onDoubleClick={handleDoubleClick} className={`cursor-pointer ${flash ? "flash-text" : ""} z-50 `} >
-            {children}
+        <div onDoubleClick={handleDoubleClick} className={`cursor-pointer  z-50 `} >
+            <span className={flash ? "flash-text" : id[0]==='d' ? "text-[#4a5565]":"text-black"  }>{children}</span>
             <style jsx>{`
                 .flash-text {
                 animation: flash-green 1s 3 !important;
@@ -144,12 +149,8 @@ export default function UpdateText({ children, initialText, queryData, setLoadin
   );
 }
 
-async function updateText(queryData:UpdateQuery , setLoading:React.Dispatch<React.SetStateAction<TextLoading>>, id:string){ 
-    setLoading({
-        loading:"loading",
-        textValue:queryData.value
-    })
-    const updatePromise = fetch(
+async function updateText(queryData:UpdateQuery, id:string, setState:React.Dispatch<React.SetStateAction<FetchState<Task_types[]>>>|undefined, tasksSetState:React.Dispatch<React.SetStateAction<FetchState<Task[]>>> | undefined){ 
+  const updatePromise = fetch(
         NEXT_PUBLIC_API_URL + "/api/textUpdate",
         {
             method: "PUT",
@@ -164,28 +165,35 @@ async function updateText(queryData:UpdateQuery , setLoading:React.Dispatch<Reac
             loading: 'Updating...',
             success: 'Updated Successfully',
             error: 'Updating Failed',
-        });
-    
-      if (res.ok) {
+          });
+          
+          if (res.ok) {
+            
+        // property to update title-task-id
+
+        const part1 = queryData.columnName;
+        const part2 = queryData.rowId;
+
+        if(tasksSetState)tasksSetState(prev => ({
+          ...prev,
+          data: prev.data ? prev.data.map(t => (t.task_id === part2 ? {...t, [part1]:queryData.value} : t)) : prev.data,
+        }));
         
-        setLoading({
-            loading:"true",
-            textValue:queryData.value
-        });
+        else if(setState)setState(prev => ({
+          ...prev,
+          data: prev.data ? prev.data.map(t => (t.type_id === part2 ? {...t, [part1]:queryData.value} : t)) : prev.data,
+        }));
+
+        
       } else {
-        console.error("update failed");
-        
-        setLoading({
-            loading:"false",
-            textValue:queryData.value
-        })  
+        console.error("update failed");  
       }
     } catch (error) {
         console.error(`Error updating text ${queryData.tableName}:`, error);
-        setLoading({
-            loading:"false",
-            textValue:queryData.value
-        });
+
     }
     // Call the parent's function to update the external state/database
   };
+
+
+  export default React.memo(UpdateText)

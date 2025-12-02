@@ -80,6 +80,7 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
             setColumns(taskTypes.map((type) => ({ id: type.type_id })));
         }
     }, [taskTypes]);
+    console.log("qw",taskTypes)
 
     useEffect(() => {
         if (tasks) {
@@ -270,9 +271,9 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
         >
 
             <Tools taskTypes={taskTypes} typeIdMap={typeIdMap} reFetch={reFetch} company_id={company_id} />
-            <div id="kanban-table" className={`${clicking ? "cursor-grabbing" : ""} w-full h-[400px] bg-white border-[2px] overflow-hidden pt-6`}>
+            <div  className={`${clicking ? "cursor-grabbing" : ""} w-full h-[400px] bg-white border-[2px] overflow-hidden pt-6`}>
                 <SortableContext items={columns} strategy={horizontalListSortingStrategy}>
-                    <div className="scrollbar my-scroll flex flex-nowrap gap-8 overflow-x-auto w-full h-full">
+                    <div id="kanban-table" className="scrollbar my-scroll flex flex-nowrap gap-8 overflow-x-auto w-full h-full">
                         {(loading || tasksLoading ) ? <ColumnSkeleton/> :
                         <>
                         <LiveMouseBoard/>
@@ -280,12 +281,15 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
                                 <div key={item.type_name} className=" flex-shrink-0 w-[300px] " >
                                     <div className="relative w-full h-screen">
                                         <Column
+                                            key={item.type_id}
                                             dragged={false}
                                             clicking={clicking}
                                             column={item}
                                             reFetch={tasksReFetch}
                                             columnTasks={filteredTasks?.filter(task => task.type_id === item.type_id) ?? []}
-                                        />
+                                            setState={setState}
+                                            tasksSetState={tasksSetState}
+                                       />
                                 </div>
                                 </div>
                             ))}

@@ -4,11 +4,12 @@ import {useSortable, verticalListSortingStrategy} from '@dnd-kit/sortable';
 import {
   SortableContext,
 } from "@dnd-kit/sortable";
-import UpdateText, { TextLoading } from "./UpdateText"
+import UpdateText from "./UpdateText"
 import { Task, Task_types } from "@/models/database";
 import TaskRow from './TaskRow';
 import { useEditingContext } from '@/contexts/EditingContext';
 import {  GripVertical } from "lucide-react";
+import { FetchState } from '@/hooks/useFetchUserTasks';
 
 type Props = {
     dragged:boolean;
@@ -16,15 +17,16 @@ type Props = {
     columnTasks:Task[];
     clicking: string;
     reFetch:() => Promise<unknown>;
+    tasksSetState?:React.Dispatch<React.SetStateAction<FetchState<Task[]>>>
+    setState?:React.Dispatch<React.SetStateAction<FetchState<Task_types[]>>>
 }
 
- function Column ({column, columnTasks, clicking, dragged}:Props){
+ function Column ({column, columnTasks, clicking, dragged, setState, tasksSetState}:Props){
 
 
     const [items, setItems] = useState<{id:string}[]>([]);
-    const [tasks, setTasks] = useState<Task[]>([]);
+    // const [tasks, setTasks] = useState<Task[]>([]);
     const { editingSpecs }=useEditingContext();
-    const [nameLoading, setNameLoading] = useState<TextLoading>({loading:"false",textValue:""});
 
     const nameQueryData={
       tableName:"task_types",
@@ -37,7 +39,6 @@ type Props = {
     useEffect(() => {
         if (columnTasks) {
           setItems(columnTasks.map((task) => ({id:task.task_id})));
-          setTasks(columnTasks);
         }
       }, [columnTasks]);
 
@@ -48,7 +49,7 @@ type Props = {
         transform,
         transition,
       } = useSortable({id: column.type_id}); 
-      const height=tasks?.length * 110 + 40
+      const height=columnTasks?.length * 110 + 40
       const style = {
         transform: transform
         ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
@@ -58,7 +59,7 @@ type Props = {
       };
       
       const transparent = !dragged && clicking=== column.type_id 
-    
+    console.log(column.type_name);
 
     return(
         <div 
@@ -70,10 +71,10 @@ type Props = {
             <div className='flex flex-col gap-4'>
 
                 <div className='flex gap-2'>
-                  <UpdateText initialText={column.type_name} queryData={nameQueryData} setLoading={setNameLoading} id={`name-${column.type_id}`}>
-                    <h1 className='font-bold -ml-1'>{nameLoading.loading === "false" ? column.type_name : nameLoading.textValue}</h1>
+                  <UpdateText key={column.type_id} initialText={column.type_name} queryData={nameQueryData} id={`name-${column.type_id}`} setState={setState}>
+                    <h1 className='font-bold -ml-1'>{column.type_name}</h1>
                   </UpdateText>
-                  <p className='text-gray-500 '>({tasks?.length})</p>
+                  <p className='text-gray-500 '>({columnTasks?.length})</p>
                   <GripVertical className={`${clicking ?"cursor-grabbing":"cursor-grab"} w-5 h-5 ml-auto`} {...(!editingSpecs ? listeners : {})} />
                 </div>
 
@@ -81,8 +82,8 @@ type Props = {
                     
                         <SortableContext items={items} strategy={verticalListSortingStrategy}>
                             <div className="flex flex-wrap gap-5">
-                            {tasks.map((task) => (
-                                <TaskRow dragged={false} key={task.task_id} clicking={clicking}  id={task.task_id} task={task} />
+                            {columnTasks.map((task) => (
+                                <TaskRow dragged={false} key={task.task_id} clicking={clicking}  id={task.task_id} task={task} tasksSetState={tasksSetState} />
                             ))}
                             </div>
                         </SortableContext>

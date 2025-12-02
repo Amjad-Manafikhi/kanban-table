@@ -4,20 +4,19 @@ import {CSS} from '@dnd-kit/utilities';
 import React, { useState } from "react";
 import UpdateText from './UpdateText';
 import { useEditingContext } from "@/contexts/EditingContext";
-import {TextLoading} from "./UpdateText"
 import { GripVertical } from "lucide-react";
+import { FetchState } from "@/hooks/useFetchUserTasks";
 type Props = {
     id: string;
     task: Task;
     clicking: string;
     dragged:boolean;
+    tasksSetState?:React.Dispatch<React.SetStateAction<FetchState<Task[]>>>;
 }
 
- function TaskRow({id, clicking, task, dragged}:Props){
+ function TaskRow({id, clicking, task, dragged, tasksSetState }:Props){
     
   const { editingSpecs } = useEditingContext();
-  const [titleLoading, setTitleLoading] = useState<TextLoading>({loading:"false",textValue:""});
-  const [descriptionLoading, setDescriptionLoading] = useState<TextLoading>({loading:"false",textValue:""});
     console.log("test",task.title,task.color)
     const {
             attributes,
@@ -65,11 +64,11 @@ type Props = {
             <div className="flex h-full w-full gap-3"> 
 
                 <div className="flex flex-col py-2 gap-1">
-                    <UpdateText initialText={task.title} queryData={titleQueryData} setLoading={setTitleLoading} id={`title-${task.task_id}`}>
-                        <h3 className="text-[15px]">{titleLoading.loading === "false" ? task.title : titleLoading.textValue}</h3>    
+                    <UpdateText initialText={task.title} queryData={titleQueryData} id={`title-${task.task_id}`} tasksSetState={tasksSetState}>
+                        <h3 className="text-[15px]">{task.title}</h3>    
                     </UpdateText>
-                    <UpdateText initialText={task.description} queryData={descriptionQueryData} setLoading={setDescriptionLoading} id={`description-${task.task_id}`}>
-                        <p className="text-[12px] text-gray-600 cursor-pointer">{descriptionLoading.loading === "false"? task.description : descriptionLoading.textValue}</p>    
+                    <UpdateText initialText={task.description} queryData={descriptionQueryData} id={`description-${task.task_id}`} tasksSetState={tasksSetState} >
+                        <h3 className="text-[12px]">{task.description}</h3>    
                     </UpdateText>
                     
                 </div>
@@ -83,4 +82,4 @@ type Props = {
     )
 }
 
-export default React.memo(TaskRow);
+export default  (TaskRow);
