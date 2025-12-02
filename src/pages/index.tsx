@@ -1,6 +1,6 @@
 import { Task, Task_types } from "@/models/database";
 import useFetchUserTasks from "@/hooks/useFetchUserTasks";
-import KanbanTable, {Reorder} from "../components/KanbanTable"
+import KanbanTable, {Reorder} from "../components/kanban/KanbanTable"
 import { EditingProvider } from "@/contexts/EditingContext";
 import { useSocket } from './../hooks/useSocket';
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;

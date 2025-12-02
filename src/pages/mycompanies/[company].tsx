@@ -1,6 +1,6 @@
 import { Task, Task_types } from "@/models/database";
 import useFetchCompanyTasks from "@/hooks/useFetchCompanyTasks";
-import KanbanTable, { Reorder } from "@/components/KanbanTable";
+import KanbanTable, { Reorder } from "@/components/kanban/KanbanTable";
 import { EditingProvider } from "@/contexts/EditingContext";
 
 import { useRouter } from "next/router";

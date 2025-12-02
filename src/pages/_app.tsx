@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { Toaster } from "react-hot-toast";
-import Layout from "@/components/Layout";
+import Layout from "@/components/layout/LayoutWrapper";
 import { LayoutProvider } from "@/contexts/LayoutContext";
 // import { useRouter } from "next/router";
 // import  Cookies from 'js-cookie'

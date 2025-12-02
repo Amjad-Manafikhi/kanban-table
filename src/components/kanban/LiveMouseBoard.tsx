@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useMouseShare } from "../hooks/useMouseShare";
+import { useMouseShare } from "../../hooks/useMouseShare";
 import { BsCursorFill } from "react-icons/bs";
 export default function LiveMouseBoard() {
     const [userId, setUserId] = useState<number>();

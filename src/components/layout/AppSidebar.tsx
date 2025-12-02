@@ -3,7 +3,7 @@ import {
   FaUserTie         // Supervisor
 } from "react-icons/fa";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import  styles from'./../styles/scrollbar.module.css';
+import  styles from'./../../styles/scrollbar.module.css';
 import {
   Sidebar,
   SidebarContent,

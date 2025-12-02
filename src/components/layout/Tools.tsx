@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 import Modal from "./Modal";
-import TaskForm from './TaskForm';
-import TagForm from './TagForm';
+import TaskForm from '../forms/TaskForm';
+import TagForm from '../forms/TagForm';
 import { Tag, Task_types } from "@/models/database";
 import {
   DropdownMenu,
@@ -12,7 +12,7 @@ import {
 //   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import ColumnForm from "./ColumnForm";
+import ColumnForm from "../forms/ColumnForm";
 import useFetchUserTasks from "@/hooks/useFetchUserTasks";
 import useFetchCompanyTasks from "@/hooks/useFetchCompanyTasks";
 

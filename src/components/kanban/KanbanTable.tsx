@@ -18,14 +18,14 @@ import {
     SortableContext,
     sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
-import Column from "./../components/Column";
+import Column from "./Column";
 import { Task, Task_types } from "@/models/database";
 import { FetchState } from "@/hooks/useFetchUserTasks";
-import Tools from '../components/Tools';
-import DeleteArea from './../components/DeleteArea';
+import Tools from '../layout/Tools';
+import DeleteArea from './DeleteArea';
 import { useEditingContext } from "@/contexts/EditingContext";
 import TaskRow from "./TaskRow";
-import { useSocket } from "../hooks/useSocket";
+import { useSocket } from "../../hooks/useSocket";
 import LiveMouseBoard from "./LiveMouseBoard";
 import { useRouter } from "next/router";
 import ColumnSkeleton from "./ColumnSkeleton";

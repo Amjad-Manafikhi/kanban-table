@@ -1,7 +1,7 @@
-import PasswordUpdateForm from './../components/PasswordUpdateForm';
-import NameUpdateForm from "@/components/NameUpdateForm";
-import CreateCompany from "@/components/CreateCompany";
-import AddUserToCompany from "@/components/AddUserToCompany";
+import PasswordUpdateForm from '../components/forms/PasswordUpdateForm';
+import NameUpdateForm from "@/components/forms/NameUpdateForm";
+import CreateCompany from "@/components/profile/CreateCompany";
+import AddUserToCompany from "@/components/profile/AddUserToCompany";
 import React from "react";
 import { useLayoutContext } from "@/contexts/LayoutContext";
 
