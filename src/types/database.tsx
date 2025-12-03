@@ -1,7 +1,9 @@
 export type User = {
     user_id: number;
-    name: string;
+    firstName: string;
+    secondName: string;
     email: string;
+    color:String;
 }
 
 export type Company = {

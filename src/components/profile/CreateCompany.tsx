@@ -4,7 +4,7 @@ import { z } from "zod";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 // Type for decoded token payload
 type SessionPayload = {
@@ -30,9 +30,9 @@ const formSchema = z.object({
 
 type FormSchemaType = z.infer<typeof formSchema>;
 type Props = {
-    setReFetchSidebarCompanies:Dispatch<SetStateAction<boolean>>
+  setReFetchSidebarCompanies: Dispatch<SetStateAction<boolean>>
 }
-export default function CreateCOmpany({setReFetchSidebarCompanies}:Props) {
+export default function CreateCOmpany({ setReFetchSidebarCompanies }: Props) {
   const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState<number>();
 
@@ -71,11 +71,11 @@ export default function CreateCOmpany({setReFetchSidebarCompanies}:Props) {
     const response2 = await fetch("/api/user_company/create", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ companyId, userId, ownerId:userId }),
+      body: JSON.stringify({ companyId, userId, ownerId: userId }),
     });
     const result2 = await response2.json();
 
-    
+
     setLoading(false);
 
     if (response.ok && response2.ok) {

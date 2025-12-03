@@ -12,10 +12,10 @@ export default async function handler(
 
   if (req.method === 'POST') {
     const authorized = await apiAuth(req);
-          if(!authorized){
-            return res.status(401).json({ message: 'Unauthorized' }); 
+    if (!authorized) {
+      return res.status(401).json({ message: 'Unauthorized' });
     }
-    const {companyName, userId}= req.body;
+    const { companyName, userId } = req.body;
     // Validate required fields
     if (
       companyName === undefined ||
@@ -30,27 +30,27 @@ export default async function handler(
         'INSERT INTO companies (name, owner_id) VALUES (?,?)',
         [companyName, userId]
       );
-      
+
 
 
       res.status(200).json({
         message: 'company added successfully',
         result,
       });
-    }  catch (error: unknown) {
-        console.error(`Error creating company:`, error);
+    } catch (error: unknown) {
+      console.error(`Error creating company:`, error);
 
-        if (error instanceof Error) {
-          res.status(500).json({
-            message: `Error creating company`,
-            error: error.message,
-          });
-        } else {
-          res.status(500).json({
-            message: `Error creating company`,
-            error: 'Unknown error occurred',
-          });
-        }
+      if (error instanceof Error) {
+        res.status(500).json({
+          message: `Error creating company`,
+          error: error.message,
+        });
+      } else {
+        res.status(500).json({
+          message: `Error creating company`,
+          error: 'Unknown error occurred',
+        });
+      }
     }
 
   } else {

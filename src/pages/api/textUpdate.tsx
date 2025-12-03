@@ -2,7 +2,7 @@ import { query } from '../../lib/db';
 import type { NextApiRequest } from 'next';
 import { NextApiResponseServerIO } from '@/types/next';
 import { emitExceptSender } from './helper';
-import { Task } from '@/models/database';
+import { Task } from '@/types/database';
 import apiAuth from '@/lib/apiAuth';
 
 export default async function handler(
@@ -12,12 +12,12 @@ export default async function handler(
   if (req.method === 'PUT') {
 
     const authorized = await apiAuth(req);
-        if(!authorized){
-          return res.status(401).json({ message: 'Unauthorized' }); 
+    if (!authorized) {
+      return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    const { rowId, value, tableName, columnName, rowIdName, socketId} = req.body.queryData;
-    const { id } =req.body;
+    const { rowId, value, tableName, columnName, rowIdName, socketId } = req.body.queryData;
+    const { id } = req.body;
     if (
       !rowId ||
       !rowIdName ||
@@ -37,21 +37,21 @@ export default async function handler(
       );
 
       const updatedElement = (await query(`SELECT * FROM ${tableName} WHERE ${rowIdName} = ?`, [rowId])) as Task[];
-      
-      
-  
-      if(rowId[0]==='t'){
+
+
+
+      if (rowId[0] === 't') {
         emitExceptSender({
-          socketId:socketId,
+          socketId: socketId,
           event: "task-text-updated",
-          data:{element:updatedElement[0], id:id}
+          data: { element: updatedElement[0], id: id }
         });
-      }        
-      else{ 
+      }
+      else {
         emitExceptSender({
-          socketId:socketId,
+          socketId: socketId,
           event: "column-text-updated",
-          data:{element:updatedElement[0], id:id}
+          data: { element: updatedElement[0], id: id }
         });
       }
       res.status(200).json({
@@ -59,19 +59,19 @@ export default async function handler(
         result,
       });
     } catch (error: unknown) {
-        console.error(`Error updating ${columnName} in ${tableName}:`, error);
+      console.error(`Error updating ${columnName} in ${tableName}:`, error);
 
-        if (error instanceof Error) {
-          res.status(500).json({
-            message: `Error updating ${columnName} in ${tableName}`,
-            error: error.message,
-          });
-        } else {
-          res.status(500).json({
-            message: `Error updating ${tableName}`,
-            error: 'Unknown error occurred',
-          });
-        }
+      if (error instanceof Error) {
+        res.status(500).json({
+          message: `Error updating ${columnName} in ${tableName}`,
+          error: error.message,
+        });
+      } else {
+        res.status(500).json({
+          message: `Error updating ${tableName}`,
+          error: 'Unknown error occurred',
+        });
+      }
     }
   } else {
     res.setHeader('Allow', ['PUT']);

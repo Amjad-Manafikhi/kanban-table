@@ -22,8 +22,8 @@ const formSchema = z
     email: z.string().email(),
     password: z.string().min(8, 'Password should be at least 8 characters'),
     confirmPassword: z.string(),
-    firstName: z.string().min(1," This field is required"),
-    secondName: z.string().min(1," This field is required"),
+    firstName: z.string().min(1, " This field is required"),
+    secondName: z.string().min(1, " This field is required"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords must match',
@@ -34,10 +34,10 @@ type FormSchemaType = z.infer<typeof formSchema>;
 
 export default function SignupPage() {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(""); 
-  
+  const [error, setError] = useState("");
+
   const router = useRouter();
-  
+
 
   const {
     register,
@@ -47,8 +47,8 @@ export default function SignupPage() {
     resolver: zodResolver(formSchema),
   });
   const onSubmit = async (data: FormSchemaType) => {
-    
-    if(!error)(setError(""));
+
+    if (!error) (setError(""));
     setLoading(true);
     const email = data.email;
     const password = data.password;
@@ -59,22 +59,21 @@ export default function SignupPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password, firstName, secondName }),
     });
-    const result= await response.json();
+    const result = await response.json();
     setLoading(false);
     if (response.ok) {
-        setError("");
-        toast.success('Logged in Successfully!')
-        router.push("/mytasks")
+      setError("");
+      toast.success('Logged in Successfully!')
+      router.push("/")
     } else {
       setError(result.error || "somthing went wrong");
       toast.error(result.error);
-      
+
     }
   };
-  
+
   return (
     <div className="flex w-screen h-screen justify-center items-center">
-      <Link href={"/"} className='fixed top-4 left-4'>&larr; back to home</Link>
       <form
         noValidate
         onSubmit={handleSubmit(onSubmit)}
@@ -84,55 +83,55 @@ export default function SignupPage() {
           <h1 className="">Task Management System</h1>
         </div>
         <div className='flex flex-col'>
-            <input
+          <input
             type="text"
             placeholder="First Name"
             className="bg-white p-2 rounded-md"
             {...register('firstName')}
-            
-            />
-            {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName.message}</p>}
+
+          />
+          {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName.message}</p>}
         </div>
         <div className='flex flex-col'>
-            <input
+          <input
             type="text"
             placeholder="Second Name"
             className="bg-white p-2 rounded-md"
             {...register('secondName')}
-            
-            />
-            {errors.secondName && <p className="text-red-500 text-sm">{errors.secondName.message}</p>}
+
+          />
+          {errors.secondName && <p className="text-red-500 text-sm">{errors.secondName.message}</p>}
         </div>
         <div className='flex flex-col'>
-            <input
+          <input
             type="email"
             placeholder="Email"
             className="bg-white p-2 rounded-md"
             {...register('email')}
-            
-            />
-            {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+
+          />
+          {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
         </div>
         <div className='flex flex-col'>
 
-            <input
+          <input
             type="password"
             placeholder="Password"
             className="bg-white p-2 rounded-md"
             {...register('password')}
-            />
-            {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+          />
+          {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
         </div>
         <div className='flex flex-col'>
-            <input
+          <input
             type="password"
             placeholder="Confirm Password"
             className="bg-white p-2 rounded-md"
             {...register('confirmPassword')}
-            />
-            {errors.confirmPassword && (
-                <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>
-            )}
+          />
+          {errors.confirmPassword && (
+            <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>
+          )}
         </div>
         {/* <div className='flex flex-col'>
             <Select value={userRole} onValueChange={setUserRole}>

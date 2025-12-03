@@ -9,8 +9,8 @@ export default async function handler(
   if (req.method === 'DELETE') {
 
     const authorized = await apiAuth(req);
-      if(!authorized){
-        return res.status(401).json({ message: 'Unauthorized' }); 
+    if (!authorized) {
+      return res.status(401).json({ message: 'Unauthorized' });
     }
 
 
@@ -26,25 +26,25 @@ export default async function handler(
         message: 'company deleted successfully',
         result,
       });
-      }catch (error: unknown) {
-        console.error(`Error deleting company:`, error);
+    } catch (error: unknown) {
+      console.error(`Error deleting company:`, error);
 
-        if (error instanceof Error) {
-          res.status(500).json({
-            message: `Error deleting company`,
-            error: error.message,
-          });
-        } else {
-          res.status(500).json({
-            message: `Error deleting company`,
-            error: 'Unknown error occurred',
-          });
-        }
+      if (error instanceof Error) {
+        res.status(500).json({
+          message: `Error deleting company`,
+          error: error.message,
+        });
+      } else {
+        res.status(500).json({
+          message: `Error deleting company`,
+          error: 'Unknown error occurred',
+        });
+      }
     }
-    } else {
-      res.setHeader('Allow', ['DELETE']);
-      res.status(405).end(`Method ${req.method} Not Allowed`);
-    }
+  } else {
+    res.setHeader('Allow', ['DELETE']);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
+  }
 }
 
 

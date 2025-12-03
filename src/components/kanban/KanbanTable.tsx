@@ -19,7 +19,7 @@ import {
     sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
 import Column from "./Column";
-import { Task, Task_types } from "@/models/database";
+import { Task, Task_types } from "@/types/database";
 import { FetchState } from "@/hooks/useFetchUserTasks";
 import Tools from '../layout/Tools';
 import DeleteArea from './DeleteArea';
@@ -49,7 +49,7 @@ type Props = {
     updateRows: (newItems: Reorder[], overColumnId: string, activeTaskId: string) => Promise<void>;
     deleteColumn: (id: string) => Promise<void>;
     deleteRow: (id: string) => Promise<void>;
-    company_id?:number;
+    company_id?: number;
 
 
 }
@@ -66,10 +66,10 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
     };
 
 
-    const router=useRouter();
-    const {socket,socketId} = useSocket();
+    const router = useRouter();
+    const { socket, socketId } = useSocket();
     const { data: taskTypes, loading, reFetch, setState } = userTaskTypes;
-    const { data: tasks, loading:tasksLoading, reFetch: tasksReFetch, setState: tasksSetState } = userTasks;
+    const { data: tasks, loading: tasksLoading, reFetch: tasksReFetch, setState: tasksSetState } = userTasks;
     const [columns, setColumns] = useState<Reorder[]>([]);
     const [rows, setRows] = useState<RowsReorder>();
     const [clicking, setClicking] = useState("");
@@ -133,182 +133,182 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
 
 
 
-   useEffect(() => {
-  if (!socket || !socketId) return;
+    useEffect(() => {
+        if (!socket || !socketId) return;
 
-  console.log("Socket initialized for user:", socketId);
+        console.log("Socket initialized for user:", socketId);
 
 
-  // 🔹 Task updated
-  socket.on("task-updated", () => {
-    tasksReFetch();
-  });
+        // 🔹 Task updated
+        socket.on("task-updated", () => {
+            tasksReFetch();
+        });
 
-  // 🔹 Task created
-  socket.on("task-created", (task: Task) => {
-    tasksSetState(prev => ({
-      ...prev,
-      data: prev.data ? [...prev.data, task] : [task],
-    }));
-  });
+        // 🔹 Task created
+        socket.on("task-created", (task: Task) => {
+            tasksSetState(prev => ({
+                ...prev,
+                data: prev.data ? [...prev.data, task] : [task],
+            }));
+        });
 
-  // 🔹 Task deleted
-  socket.on("task-deleted", ({id}) => {
-    tasksSetState(prev => ({
-      ...prev,
-      data: prev.data ? prev.data.filter(t => t.task_id !== id) : prev.data,
-    }));
-  });
+        // 🔹 Task deleted
+        socket.on("task-deleted", ({ id }) => {
+            tasksSetState(prev => ({
+                ...prev,
+                data: prev.data ? prev.data.filter(t => t.task_id !== id) : prev.data,
+            }));
+        });
 
-  // 🔹 Task type updated
-  socket.on("task-type-updated", ({activeId, overId}) => {
+        // 🔹 Task type updated
+        socket.on("task-type-updated", ({ activeId, overId }) => {
 
-    const oldIndex = taskTypes?.findIndex(t => t.type_id === activeId);
-    const newIndex = taskTypes?.findIndex(t => t.type_id === overId);
+            const oldIndex = taskTypes?.findIndex(t => t.type_id === activeId);
+            const newIndex = taskTypes?.findIndex(t => t.type_id === overId);
 
-    if (typeof oldIndex === "number" && typeof newIndex === "number" && taskTypes) {
-      setState(prev => ({
-        ...prev,
-        data: prev.data ? arrayMove(prev.data, oldIndex, newIndex) : prev.data,
-      }));
-    }
-  });
+            if (typeof oldIndex === "number" && typeof newIndex === "number" && taskTypes) {
+                setState(prev => ({
+                    ...prev,
+                    data: prev.data ? arrayMove(prev.data, oldIndex, newIndex) : prev.data,
+                }));
+            }
+        });
 
-  // 🔹 Task type created
-  socket.on("task-type-created", (newTaskType: Task_types) => {
-    setState(prev => ({
-      ...prev,
-      data: prev.data ? [...prev.data, newTaskType] : prev.data,
-    }));
-  });
+        // 🔹 Task type created
+        socket.on("task-type-created", (newTaskType: Task_types) => {
+            setState(prev => ({
+                ...prev,
+                data: prev.data ? [...prev.data, newTaskType] : prev.data,
+            }));
+        });
 
-  // 🔹 Task type deleted
-  socket.on("task-type-deleted", ({id}: {id:string}) => {
-    setState(prev => ({
-      ...prev,
-      data: prev.data ? prev.data.filter(t => t.type_id !== id) : prev.data,
-    }));
-  });
+        // 🔹 Task type deleted
+        socket.on("task-type-deleted", ({ id }: { id: string }) => {
+            setState(prev => ({
+                ...prev,
+                data: prev.data ? prev.data.filter(t => t.type_id !== id) : prev.data,
+            }));
+        });
 
-  // 🔹 Task text updated
-  socket.on("task-text-updated", ({element, id}) => {
-    setEditingSpecs(id);
-    tasksSetState(prev => ({
-      ...prev,
-      data: prev.data ? prev.data.map(t => (t.task_id === element.task_id ? {...t, ...element} : t)) : prev.data,
-    }));
-  });
+        // 🔹 Task text updated
+        socket.on("task-text-updated", ({ element, id }) => {
+            setEditingSpecs(id);
+            tasksSetState(prev => ({
+                ...prev,
+                data: prev.data ? prev.data.map(t => (t.task_id === element.task_id ? { ...t, ...element } : t)) : prev.data,
+            }));
+        });
 
-  // 🔹 Column text updated
-  socket.on("column-text-updated", ({element, id }) => {
-    setEditingSpecs(id);
-    setState(prev => ({
-      ...prev,
-      data: prev.data ? prev.data.map(t => (t.type_id === element.type_id ? element : t)) : prev.data,
-    }));
-  });
+        // 🔹 Column text updated
+        socket.on("column-text-updated", ({ element, id }) => {
+            setEditingSpecs(id);
+            setState(prev => ({
+                ...prev,
+                data: prev.data ? prev.data.map(t => (t.type_id === element.type_id ? element : t)) : prev.data,
+            }));
+        });
 
-  return () => {
-    socket.off("task-updated");
-    socket.off("task-created");
-    socket.off("task-deleted");
-    socket.off("task-type-updated");
-    socket.off("task-type-created");
-    socket.off("task-type-deleted");
-    socket.off("task-text-updated");
-    socket.off("column-text-updated");
-  };
-}, [socket, socketId, setEditingSpecs, setState, taskTypes, tasks, tasksSetState]);
+        return () => {
+            socket.off("task-updated");
+            socket.off("task-created");
+            socket.off("task-deleted");
+            socket.off("task-type-updated");
+            socket.off("task-type-created");
+            socket.off("task-type-deleted");
+            socket.off("task-text-updated");
+            socket.off("column-text-updated");
+        };
+    }, [socket, socketId, setEditingSpecs, setState, taskTypes, tasks, tasksSetState]);
 
     const { tag } = router.query
-    const filteredTasks =  tag === "all" || tag === undefined
+    const filteredTasks = tag === "all" || tag === undefined
         ? (tasks ? [...tasks] : tasks)
         : tasks?.filter(task => task.tag_id === tag);
-    
 
-    const taskTypeMap =  filteredTasks?.reduce(
-    (acc, task) => {
-        acc[task.task_id] = task.type_id;
-        return acc;
-    },
-    {} as Record<string, string>
+
+    const taskTypeMap = filteredTasks?.reduce(
+        (acc, task) => {
+            acc[task.task_id] = task.type_id;
+            return acc;
+        },
+        {} as Record<string, string>
     );
-    
+
 
     return (
         <>
-        { (
-        <DndContext
-            sensors={sensors}
-            collisionDetection={collisionDetection}
-            onDragEnd={handleDragEnd}
-            onDragOver={handleDragOver}
-            onDragStart={handleDragStart}
+            {(
+                <DndContext
+                    sensors={sensors}
+                    collisionDetection={collisionDetection}
+                    onDragEnd={handleDragEnd}
+                    onDragOver={handleDragOver}
+                    onDragStart={handleDragStart}
 
-        >
+                >
 
-            <Tools taskTypes={taskTypes} typeIdMap={typeIdMap} reFetch={reFetch} company_id={company_id} />
-            <div  className={`${clicking ? "cursor-grabbing" : ""} w-full h-[400px] bg-white border-[2px] overflow-hidden pt-6`}>
-                <SortableContext items={columns} strategy={horizontalListSortingStrategy}>
-                    <div id="kanban-table" className="scrollbar my-scroll flex flex-nowrap gap-8 overflow-x-auto w-full h-full">
-                        {(loading || tasksLoading ) ? <ColumnSkeleton/> :
-                        <>
-                        <LiveMouseBoard/>
-                            {taskTypes?.map((item) => (
-                                <div key={item.type_name} className=" flex-shrink-0 w-[300px] " >
-                                    <div className="relative w-full h-screen">
-                                        <Column
-                                            key={item.type_id}
-                                            dragged={false}
-                                            clicking={clicking}
-                                            column={item}
-                                            reFetch={tasksReFetch}
-                                            columnTasks={filteredTasks?.filter(task => task.type_id === item.type_id) ?? []}
-                                            setState={setState}
-                                            tasksSetState={tasksSetState}
-                                       />
-                                </div>
-                                </div>
-                            ))}
-                        </>
-                        }
+                    <Tools taskTypes={taskTypes} typeIdMap={typeIdMap} reFetch={reFetch} company_id={company_id} />
+                    <div className={`${clicking ? "cursor-grabbing" : ""} w-full h-[400px] bg-white border-[2px] overflow-hidden pt-6`}>
+                        <SortableContext items={columns} strategy={horizontalListSortingStrategy}>
+                            <div id="kanban-table" className="scrollbar my-scroll flex flex-nowrap gap-8 overflow-x-auto w-full h-full">
+                                {(loading || tasksLoading) ? <ColumnSkeleton /> :
+                                    <>
+                                        <LiveMouseBoard />
+                                        {taskTypes?.map((item) => (
+                                            <div key={item.type_name} className=" flex-shrink-0 w-[300px] " >
+                                                <div className="relative w-full h-screen">
+                                                    <Column
+                                                        key={item.type_id}
+                                                        dragged={false}
+                                                        clicking={clicking}
+                                                        column={item}
+                                                        reFetch={tasksReFetch}
+                                                        columnTasks={filteredTasks?.filter(task => task.type_id === item.type_id) ?? []}
+                                                        setState={setState}
+                                                        tasksSetState={tasksSetState}
+                                                    />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </>
+                                }
+                            </div>
+
+                        </SortableContext>
                     </div>
+                    <DragOverlay>
+                        {
+                            DraggedElement &&
+                            ("task_id" in DraggedElement ? (
+                                <TaskRow
+                                    key={DraggedElement.task_id}
+                                    clicking={clicking}
+                                    id={DraggedElement.task_id}
+                                    task={DraggedElement}
+                                    dragged={true}
+                                />
+                            ) : "type_id" in DraggedElement ? (
+                                <Column
+                                    key={DraggedElement.type_name}
+                                    clicking={clicking}
+                                    column={DraggedElement}
+                                    reFetch={tasksReFetch}
+                                    columnTasks={
+                                        tasks
+                                            ? tasks.filter(
+                                                (task) => task.type_id === DraggedElement.type_id
+                                            )
+                                            : []
+                                    }
+                                    dragged={true}
 
-                </SortableContext>
-            </div>
-            <DragOverlay>
-                {
-                    DraggedElement &&
-                    ("task_id" in DraggedElement ? (
-                        <TaskRow
-                            key={DraggedElement.task_id}
-                            clicking={clicking}
-                            id={DraggedElement.task_id}
-                            task={DraggedElement}
-                            dragged={true}
-                        />
-                    ) : "type_id" in DraggedElement ? (
-                        <Column
-                            key={DraggedElement.type_name}
-                            clicking={clicking}
-                            column={DraggedElement}
-                            reFetch={tasksReFetch}
-                            columnTasks={
-                                tasks
-                                    ? tasks.filter(
-                                        (task) => task.type_id === DraggedElement.type_id
-                                    )
-                                    : []
-                            }
-                            dragged={true}
+                                />
+                            ) : null)
+                        }
+                    </DragOverlay>
+                    <DeleteArea isDragging={clicking?.length > 0 ? true : false} />
 
-                        />
-                    ) : null)
-                }
-            </DragOverlay>
-            <DeleteArea isDragging={clicking?.length > 0 ? true : false} />
-
-        </DndContext>)}
+                </DndContext>)}
         </>
 
     );
@@ -358,17 +358,17 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
                 const colNewIndex = columns?.findIndex((i) => i.id === over.id);
                 const updatedColumns = arrayMove(columns, colOldIndex, colNewIndex)
                 setColumns(updatedColumns);
-               // if (taskTypes !== null && oldIndex !== undefined && newIndex !== undefined) console.log("updateddd", arrayMove(taskTypes, oldIndex, newIndex))
+                // if (taskTypes !== null && oldIndex !== undefined && newIndex !== undefined) console.log("updateddd", arrayMove(taskTypes, oldIndex, newIndex))
                 if (taskTypes !== null && oldIndex !== undefined && newIndex !== undefined) setState((prev) => ({ ...prev, data: prev.data ? arrayMove(prev.data, oldIndex, newIndex) : prev.data }));
 
                 if (typeof over.id === "string") {
                     await updateColumns(updatedColumns, active.id, over.id);
-                    
+
                 }
             }
             else {
                 if (!rows) return
-                if( String(over.id)[0] === 't'){
+                if (String(over.id)[0] === 't') {
                     const newColumn = tasks?.find((item) => item.task_id === over.id)?.type_id ?? undefined;
                     if (!newColumn) return;
                     const oldIndex = rows[newColumn].findIndex((i) => i.id === active.id);
@@ -396,8 +396,8 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
                     }
                     await updateRows(newRows, String(newColumn), String(active.id));
                 }
-                else if(String(over.id)[0] === 'c'){
-                    await updateRows([{id:String(active.id)}], String(over.id), String(active.id));
+                else if (String(over.id)[0] === 'c') {
+                    await updateRows([{ id: String(active.id) }], String(over.id), String(active.id));
                 }
 
                 tasksReFetch();
@@ -410,21 +410,21 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
         if (editingSpecs) return;
         const { active, over } = event;
         if (!over) return;
-        if(over.id===active.id)return;
+        if (over.id === active.id) return;
         if (typeof (active.id) === 'string' && active.id[0] === 'c') return;
 
         if (typeof (over.id) === "string" && over.id[0] === 'c') {
             updateRows([{ id: String(active.id) }], String(over.id), String(active.id));
             tasksSetState(prev => {
                 if (!prev?.data) return prev;
-            
+
                 const index = prev.data.findIndex((t: Task) => t.task_id === active?.id);
                 if (index === -1) return prev;
 
-                const updatedTask = { 
-                    ...prev.data[index], 
-                    type_id: String(over.id), 
-                    idx: 0 
+                const updatedTask = {
+                    ...prev.data[index],
+                    type_id: String(over.id),
+                    idx: 0
                 };
 
                 const newData = [...prev.data];
@@ -433,23 +433,23 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
                 return { ...prev, data: newData };
             });
         }
-        else if(typeof (over.id) === "string" && typeof (active.id) === "string" && active.id[0] === 't' && over.id[0] === 't'){
+        else if (typeof (over.id) === "string" && typeof (active.id) === "string" && active.id[0] === 't' && over.id[0] === 't') {
             const overId = taskTypeMap?.[over.id];
             const activeId = taskTypeMap?.[active.id];
-            if(overId === activeId) return
-            
-           // updateRows([{ id: String(active.id) }], String(overId), String(active.id));
+            if (overId === activeId) return
+
+            // updateRows([{ id: String(active.id) }], String(overId), String(active.id));
             tasksSetState(prev => {
                 if (!prev?.data) return prev;
-                
+
 
                 const index = prev.data.findIndex((t: Task) => t.task_id === active?.id);
                 if (index === -1) return prev;
 
-                const updatedTask = { 
-                    ...prev.data[index], 
-                    type_id: String(overId), 
-                    idx: 0 
+                const updatedTask = {
+                    ...prev.data[index],
+                    type_id: String(overId),
+                    idx: 0
                 };
 
                 const newData = [...prev.data];

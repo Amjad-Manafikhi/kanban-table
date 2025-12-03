@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Company } from "@/models/database";
+import { Company } from "@/types/database";
 
 const formSchema = z.object({
   userEmail: z.string().email(),
@@ -46,7 +46,7 @@ export default function CreateCompany() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         ...data,
-        ownerId:companies.find(company=>{company.company_id===data.companyId})?.owner_id
+        ownerId: companies.find(company => { company.company_id === data.companyId })?.owner_id
       }),
     });
 

@@ -47,7 +47,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   }
 
   // ✅ Default layout
-  
+
   return (
     <LayoutProvider>
       <Layout>

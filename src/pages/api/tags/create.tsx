@@ -15,20 +15,20 @@ export default async function handler(
 
   if (req.method === 'PUT') {
     const authorized = await apiAuth(req);
-    if(!authorized){
-      return res.status(401).json({ message: 'Unauthorized' }); 
+    if (!authorized) {
+      return res.status(401).json({ message: 'Unauthorized' });
     }
 
     const cookies = parse(req.headers.cookie || "");
     const session = cookies.session; // your encrypted token
-    const sessionData = session? await decrypt(session):null;
+    const sessionData = session ? await decrypt(session) : null;
     const userId = sessionData?.userId;
     const { tagName, color, company_id } = req.body.newTag;
-    const uuid = uuidv4(); 
+    const uuid = uuidv4();
     // Validate required fields
     if (
-      tagName  === undefined ||
-      color  === undefined 
+      tagName === undefined ||
+      color === undefined
     ) {
       return res.status(400).json({ message: 'Missing user_company values' });
     }
@@ -37,27 +37,27 @@ export default async function handler(
       // SQL query to insert a new Cases record
       const result = await query(
         'INSERT INTO tags (tag_id, tag_name, color, user_id, company_id ) VALUES (?,?,?,?,?)',
-        [uuid, tagName, color, company_id ? 17 : userId, company_id||21 ]
+        [uuid, tagName, color, company_id ? 17 : userId, company_id || 21]
       );
 
       res.status(200).json({
         message: 'user_company added successfully',
         result,
       });
-    }  catch (error: unknown) {
-        console.error(`Error creating user_company:`, error);
+    } catch (error: unknown) {
+      console.error(`Error creating user_company:`, error);
 
-        if (error instanceof Error) {
-          res.status(500).json({
-            message: `Error creating user_company`,
-            error: error.message,
-          });
-        } else {
-          res.status(500).json({
-            message: `Error creating user_company`,
-            error: 'Unknown error occurred',
-          });
-        }
+      if (error instanceof Error) {
+        res.status(500).json({
+          message: `Error creating user_company`,
+          error: error.message,
+        });
+      } else {
+        res.status(500).json({
+          message: `Error creating user_company`,
+          error: 'Unknown error occurred',
+        });
+      }
     }
 
   } else {

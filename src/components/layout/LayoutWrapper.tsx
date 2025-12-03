@@ -2,7 +2,7 @@ import React, { ReactNode, useEffect, useState } from "react";
 import { SidebarProvider } from "../ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import Navbar from "./Navbar";
-import { Company, User_name } from "@/models/database";
+import { Company, User_name } from "@/types/database";
 import { useRouter } from "next/router";
 import { useLayoutContext } from "@/contexts/LayoutContext";
 
@@ -10,14 +10,14 @@ const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 type LayoutProps = {
   children: ReactNode;
-  setPageCompanies?:React.Dispatch<React.SetStateAction<Company[]|undefined>>
-  reFetchSidebarCompanies?:boolean;
+  setPageCompanies?: React.Dispatch<React.SetStateAction<Company[] | undefined>>
+  reFetchSidebarCompanies?: boolean;
 };
 
 export default function Layout({ children, setPageCompanies }: LayoutProps) {
   // const [loading, setLoading] = useState(true);
-  
-  const [ userName, setUserName ] = useState<User_name>();
+
+  const [userName, setUserName] = useState<User_name>();
   const router = useRouter();
   const company = router.query.company;
   const { companies, setCompanies, reFetchSidebarCompanies, setFirstName } = useLayoutContext();
@@ -26,23 +26,23 @@ export default function Layout({ children, setPageCompanies }: LayoutProps) {
     async function setData() {
       try {
         const data = await getCompanies(); // ✅ await here
-        if (data!==undefined) {
-          if(company && typeof(company) === 'string' && data.findIndex((item) => item.name === company)===null) router.push("/404");
+        if (data !== undefined) {
+          if (company && typeof (company) === 'string' && data.findIndex((item) => item.name === company) === null) router.push("/404");
           setCompanies(data);
-          if(setPageCompanies)setPageCompanies(data)
+          if (setPageCompanies) setPageCompanies(data)
         }
       } finally {
         // setLoading(false);
       }
     }
     setData();
-  },[company, setPageCompanies, router, reFetchSidebarCompanies, setCompanies]);
+  }, [company, setPageCompanies, router, reFetchSidebarCompanies, setCompanies]);
 
   useEffect(() => {
     async function setName() {
       try {
         const data = await getName(); // ✅ await here
-        if (data!==undefined) {
+        if (data !== undefined) {
           setUserName(data);
           setFirstName(data.firstName);
         }
@@ -51,19 +51,19 @@ export default function Layout({ children, setPageCompanies }: LayoutProps) {
       }
     }
     setName();
-  },[company, setPageCompanies, router, reFetchSidebarCompanies, setCompanies, setFirstName]);
+  }, [company, setPageCompanies, router, reFetchSidebarCompanies, setCompanies, setFirstName]);
 
 
   return (
-    
+
     <SidebarProvider>
-      <AppSidebar companies={companies} userName={userName}/> {/* ✅ pass data */}
+      <AppSidebar companies={companies} userName={userName} /> {/* ✅ pass data */}
       <main className="w-full mx-auto overflow-hidden">
         <Navbar />
         <div className="flex flex-col px-10 w-full h-full">{children}</div>
       </main>
     </SidebarProvider>
-    
+
   );
 }
 

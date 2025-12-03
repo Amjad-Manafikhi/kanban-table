@@ -2,7 +2,7 @@ import { query } from '../../../../lib/db'; // Adjust path if needed
 import type { NextApiRequest, NextApiResponse } from "next";
 import { parse } from 'cookie';
 import { decrypt } from '@/lib/session';
-import { User_name } from '@/models/database';
+import { User_name } from '@/types/database';
 
 
 export default async function handler(

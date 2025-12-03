@@ -1,26 +1,26 @@
 import { ReactNode } from "react";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle
 } from "../ui/dialog"
 
 
 
-type Props={
-    open:boolean;
-    setOpen:React.Dispatch<React.SetStateAction<boolean>>;
-    title:string;
-    children:ReactNode;
+type Props = {
+    open: boolean;
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    title: string;
+    children: ReactNode;
 }
 
-export default function Modal({children, open, setOpen, title}:Props){
-    
-    
-    
+export default function Modal({ children, open, setOpen, title }: Props) {
 
-    return(
+
+
+
+    return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogContent>
                 <DialogHeader>
@@ -31,5 +31,5 @@ export default function Modal({children, open, setOpen, title}:Props){
                 {children}
             </DialogContent>
         </Dialog>
-    ) 
+    )
 }

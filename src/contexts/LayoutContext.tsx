@@ -1,14 +1,14 @@
-import { Company } from '@/models/database';
+import { Company } from '@/types/database';
 import React, { createContext, useContext, useState } from 'react';
 
 
-type ContextType ={
-    companies:Company[];
-    setCompanies:React.Dispatch<React.SetStateAction<Company[]>>;
-    reFetchSidebarCompanies:boolean;
-    setReFetchSidebarCompanies:React.Dispatch<React.SetStateAction<boolean>> ;
-    firstName:string;
-    setFirstName:React.Dispatch<React.SetStateAction<string>>
+type ContextType = {
+  companies: Company[];
+  setCompanies: React.Dispatch<React.SetStateAction<Company[]>>;
+  reFetchSidebarCompanies: boolean;
+  setReFetchSidebarCompanies: React.Dispatch<React.SetStateAction<boolean>>;
+  firstName: string;
+  setFirstName: React.Dispatch<React.SetStateAction<string>>
 }
 
 
@@ -31,7 +31,7 @@ export const LayoutProvider = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
-export function   useLayoutContext() {
+export function useLayoutContext() {
   const specs = useContext(LayoutContext);
 
   if (specs === undefined) {

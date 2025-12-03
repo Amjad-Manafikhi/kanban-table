@@ -11,6 +11,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const { email, password } = req.body;
 
+
+  if (
+
+    email === undefined ||
+    password === undefined
+  ) {
+    return res.status(400).json({ message: 'Missing login values' });
+  }
+
   try {
     const user = await signIn('credentials', { email, password });
 

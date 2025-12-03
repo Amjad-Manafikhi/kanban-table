@@ -37,7 +37,10 @@ export async function signIn(
   }
 }
 
-
+interface InsertResult {
+  insertId: number;
+  // Other metadata properties like affectedRows, etc.
+}
 export async function signup(
    provider: 'credentials',
    credentials: Credentials
@@ -63,8 +66,9 @@ export async function signup(
         "#4A4A4A"  // Dark Gray (Neutral)
         ];      
         const color = colors[Math.floor(Math.random() * 9)];
-        await query('insert into users (email, password, firstName, secondName, color) values (?, ?, ?, ?,?)',[email, hashedPassword, firstName, secondName, color]);
-        return credentials;
+        const userData = await query('insert into users (email, password, firstName, secondName, color) values (?, ?, ?, ?,?)',[email, hashedPassword, firstName, secondName, color]) as InsertResult;
+        console.log(userData);
+        return {userId:userData.insertId ,email:credentials.email};
     
     } catch (error) {
         throw error

@@ -10,8 +10,8 @@ export default async function handler(
   if (req.method === 'POST') {
 
     const authorized = await apiAuth(req);
-        if(!authorized){
-          return res.status(401).json({ message: 'Unauthorized' }); 
+    if (!authorized) {
+      return res.status(401).json({ message: 'Unauthorized' });
     }
 
     const { companyId, userEmail } = req.body;
@@ -28,12 +28,12 @@ export default async function handler(
         [userEmail]
       );
 
-      const userId =  Array.isArray(result) && result?.length > 0 ?
-       "user_id" in result[0] ? result[0].user_id : null 
-       : null;
+      const userId = Array.isArray(result) && result?.length > 0 ?
+        "user_id" in result[0] ? result[0].user_id : null
+        : null;
 
       if (!userId) {
-        return res.status(404).json({message: 'Error creating user', error: 'User not found' });
+        return res.status(404).json({ message: 'Error creating user', error: 'User not found' });
       }
 
       // ✅ 2. Insert into user_company

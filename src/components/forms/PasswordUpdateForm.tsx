@@ -13,7 +13,7 @@ const formSchema = z
     newPassword: z.string().min(8, 'Password should be at least 8 characters'),
     confirmNewPassword: z.string(),
   })
-  .refine((data) => data.newPassword === data.confirmNewPassword    , {
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
     message: 'Passwords must match',
     path: ['confirmNewPassword'],
   });
@@ -35,10 +35,10 @@ export default function NameUpdateForm() {
 
   const onSubmit = async (data: FormSchemaType) => {
     setLoading(true);
-    const oldPassword  = data.oldPassword;
-    const nonHashedNewPassword  = data.newPassword;
-    const saltRounds=10;
-    const newPassword= await bcrypt.hash(nonHashedNewPassword,saltRounds);
+    const oldPassword = data.oldPassword;
+    const nonHashedNewPassword = data.newPassword;
+    const saltRounds = 10;
+    const newPassword = await bcrypt.hash(nonHashedNewPassword, saltRounds);
     const response = await fetch("/api/auth/users/updatePassword", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

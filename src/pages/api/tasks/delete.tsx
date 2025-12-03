@@ -12,8 +12,8 @@ export default async function handler(
   if (req.method === 'DELETE') {
 
     const authorized = await apiAuth(req);
-      if(!authorized){
-        return res.status(401).json({ message: 'Unauthorized' }); 
+    if (!authorized) {
+      return res.status(401).json({ message: 'Unauthorized' });
     }
 
     const { id, socketId } = req.body;
@@ -25,34 +25,34 @@ export default async function handler(
       const result = await query('DELETE FROM tasks WHERE task_id = ?', [id]);
 
       emitExceptSender({
-        socketId:socketId,
+        socketId: socketId,
         event: "task-deleted",
-        data:{id}
+        data: { id }
       });
       return res.status(200).json({
         message: 'task deleted successfully',
         result,
       });
-      
-      }catch (error: unknown) {
-        console.error(`Error deleting task:`, error);
 
-        if (error instanceof Error) {
-          res.status(500).json({
-            message: `Error deleting task`,
-            error: error.message,
-          });
-        } else {
-          res.status(500).json({
-            message: `Error deleting task`,
-            error: 'Unknown error occurred',
-          });
-        }
+    } catch (error: unknown) {
+      console.error(`Error deleting task:`, error);
+
+      if (error instanceof Error) {
+        res.status(500).json({
+          message: `Error deleting task`,
+          error: error.message,
+        });
+      } else {
+        res.status(500).json({
+          message: `Error deleting task`,
+          error: 'Unknown error occurred',
+        });
+      }
     }
-    } else {
-      res.setHeader('Allow', ['DELETE']);
-      res.status(405).end(`Method ${req.method} Not Allowed`);
-    }
+  } else {
+    res.setHeader('Allow', ['DELETE']);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
+  }
 }
 
 

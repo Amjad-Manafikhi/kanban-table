@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { decrypt } from '@/lib/session';
 import { parse } from 'cookie';
 import { NextApiResponseServerIO } from '@/types/next';
-import { Task_types } from '@/models/database';
+import { Task_types } from '@/types/database';
 import { emitExceptSender } from '../helper';
 import apiAuth from '@/lib/apiAuth';
 
@@ -18,8 +18,8 @@ export default async function handler(
     const data = req.body;
 
     const authorized = await apiAuth(req);
-      if(!authorized){
-        return res.status(401).json({ message: 'Unauthorized' }); 
+    if (!authorized) {
+      return res.status(401).json({ message: 'Unauthorized' });
     }
 
     // Validate required fields
@@ -32,52 +32,52 @@ export default async function handler(
     }
 
     try {
-      const { typeName, idx, socketId, company_id} = data;
+      const { typeName, idx, socketId, company_id } = data;
       const cookies = parse(req.headers.cookie || "");
       const session = cookies.session; // your encrypted token
-      const sessionData = session? await decrypt(session):null;
-      const userId = sessionData?.userId; 
-      const uuid = uuidv4(); 
+      const sessionData = session ? await decrypt(session) : null;
+      const userId = sessionData?.userId;
+      const uuid = uuidv4();
 
       // SQL query to insert a new Cases record
       const result = await query(
         'INSERT INTO task_types (type_id, type_name, idx, user_id, company_id) VALUES (?,?,?,?,?)',
-        [`column-${uuid}`, typeName ,idx, company_id ? 17 : userId, company_id || 21]
+        [`column-${uuid}`, typeName, idx, company_id ? 17 : userId, company_id || 21]
       );
 
-      const NewTaskType :Task_types={
-              type_id:`column-${uuid}`,
-              type_name:typeName,
-              user_id:sessionData?.userId || 0,
-              idx:idx,
-            }
+      const NewTaskType: Task_types = {
+        type_id: `column-${uuid}`,
+        type_name: typeName,
+        user_id: sessionData?.userId || 0,
+        idx: idx,
+      }
 
       emitExceptSender({
-        socketId:socketId,
+        socketId: socketId,
         event: "task-type-created",
-        data:NewTaskType
+        data: NewTaskType
       });
-      
-            
+
+
 
       res.status(200).json({
         message: 'type added successfully',
         result,
       });
-    }  catch (error: unknown) {
-        console.error(`Error creating type:`, error);
+    } catch (error: unknown) {
+      console.error(`Error creating type:`, error);
 
-        if (error instanceof Error) {
-          res.status(500).json({
-            message: `Error creating type`,
-            error: error.message,
-          });
-        } else {
-          res.status(500).json({
-            message: `Error creating type`,
-            error: 'Unknown error occurred',
-          });
-        }
+      if (error instanceof Error) {
+        res.status(500).json({
+          message: `Error creating type`,
+          error: error.message,
+        });
+      } else {
+        res.status(500).json({
+          message: `Error creating type`,
+          error: 'Unknown error occurred',
+        });
+      }
     }
 
   } else {

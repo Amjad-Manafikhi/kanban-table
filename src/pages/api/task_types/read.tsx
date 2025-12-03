@@ -1,6 +1,6 @@
 import { query } from '../../../lib/db'; // Adjust path if needed
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Task_types } from '@/models/database';
+import { Task_types } from '@/types/database';
 import apiAuth from '@/lib/apiAuth';
 
 
@@ -11,38 +11,38 @@ export default async function handler(
 
 
 
-  
+
 
   if (req.method === 'GET') {
 
     const authorized = await apiAuth(req);
-      if(!authorized){
-        return res.status(401).json({ message: 'Unauthorized' }); 
+    if (!authorized) {
+      return res.status(401).json({ message: 'Unauthorized' });
     }
     const { userId, company } = req.query
     try {
       const sql = userId
         ? "SELECT * FROM task_types WHERE user_id = ? ORDER BY idx"
-        :  "SELECT * FROM task_types WHERE company_id = ? ORDER BY idx"
-      
+        : "SELECT * FROM task_types WHERE company_id = ? ORDER BY idx"
 
-      const taskTypes = await query(sql, userId ? [userId] :  [company] );
+
+      const taskTypes = await query(sql, userId ? [userId] : [company]);
 
       res.status(200).json(taskTypes as Task_types[]);
     } catch (error: unknown) {
-        console.error('Error creating task_types:', error);
+      console.error('Error creating task_types:', error);
 
-        if (error instanceof Error) {
-          res.status(500).json({
-            message: 'Error creating task_types',
-            error: error.message,
-          });
-        } else {
-          res.status(500).json({
-            message: 'Error creating task_types',
-            error: 'Unknown error occurred',
-          });
-        }
+      if (error instanceof Error) {
+        res.status(500).json({
+          message: 'Error creating task_types',
+          error: error.message,
+        });
+      } else {
+        res.status(500).json({
+          message: 'Error creating task_types',
+          error: 'Unknown error occurred',
+        });
+      }
     }
   } else {
     res.setHeader('Allow', ['GET']);

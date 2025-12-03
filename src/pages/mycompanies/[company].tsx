@@ -1,4 +1,4 @@
-import { Task, Task_types } from "@/models/database";
+import { Task, Task_types } from "@/types/database";
 import useFetchCompanyTasks from "@/hooks/useFetchCompanyTasks";
 import KanbanTable, { Reorder } from "@/components/kanban/KanbanTable";
 import { EditingProvider } from "@/contexts/EditingContext";
@@ -9,14 +9,14 @@ import { useLayoutContext } from "@/contexts/LayoutContext";
 
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export default function MyTasks() {
+export default function Company() {
 
   const { companies } = useLayoutContext();
-  
+
 
   const router = useRouter();
   const company = router.query.company;
-  const company_id =companies?.find((item) => item.name === company)?.company_id ?? undefined;
+  const company_id = companies?.find((item) => item.name === company)?.company_id ?? undefined;
 
   const userTaskTypes = useFetchCompanyTasks<Task_types[]>(
     "/api/task_types/read",

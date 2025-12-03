@@ -16,17 +16,17 @@ export default async function handler(
 
     const cookies = parse(req.headers.cookie || "");
     const session = cookies.session; // your encrypted token
-    const data = session? await decrypt(session):null;
+    const data = session ? await decrypt(session) : null;
     const sessionUserId = data?.userId;
 
-    if(sessionUserId!==parseInt(ownerId)){
-      return res.status(401).json({ message: 'Unauthorized' }); 
+    if (sessionUserId !== parseInt(ownerId)) {
+      return res.status(401).json({ message: 'Unauthorized' });
     }
 
     // Validate required fields
     if (
-      companyId  === undefined ||
-      userId  === undefined
+      companyId === undefined ||
+      userId === undefined
     ) {
       return res.status(400).json({ message: 'Missing user_company values' });
     }
@@ -35,27 +35,27 @@ export default async function handler(
       // SQL query to insert a new Cases record
       const result = await query(
         'INSERT INTO user_company (company_id, user_id ) VALUES (?,?)',
-        [companyId, userId ]
+        [companyId, userId]
       );
 
       res.status(200).json({
         message: 'user_company added successfully',
         result,
       });
-    }  catch (error: unknown) {
-        console.error(`Error creating user_company:`, error);
+    } catch (error: unknown) {
+      console.error(`Error creating user_company:`, error);
 
-        if (error instanceof Error) {
-          res.status(500).json({
-            message: `Error creating user_company`,
-            error: error.message,
-          });
-        } else {
-          res.status(500).json({
-            message: `Error creating user_company`,
-            error: 'Unknown error occurred',
-          });
-        }
+      if (error instanceof Error) {
+        res.status(500).json({
+          message: `Error creating user_company`,
+          error: error.message,
+        });
+      } else {
+        res.status(500).json({
+          message: `Error creating user_company`,
+          error: 'Unknown error occurred',
+        });
+      }
     }
 
   } else {

@@ -9,20 +9,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const authorized = await apiAuth(req);
-    if(!authorized){
-      return res.status(401).json({ message: 'Unauthorized' }); 
+  if (!authorized) {
+    return res.status(401).json({ message: 'Unauthorized' });
   }
   try {
 
-    
-    const { alignments, overColumnId, activeTaskId} = req.body;
-    
-    const updatePromises = alignments.map((alignment:{id:string}, index:number) => {
+
+    const { alignments, overColumnId, activeTaskId } = req.body;
+
+    const updatePromises = alignments.map((alignment: { id: string }, index: number) => {
       const val = alignment?.id;
       if (val !== undefined) {
         return query(
           "UPDATE tasks SET idx = ? WHERE task_id = ?",
-          [index+1, val]
+          [index + 1, val]
         );
       }
       return Promise.resolve();

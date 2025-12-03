@@ -3,91 +3,91 @@ import { useState } from "react";
 import Modal from "./Modal";
 import TaskForm from '../forms/TaskForm';
 import TagForm from '../forms/TagForm';
-import { Tag, Task_types } from "@/models/database";
+import { Tag, Task_types } from "@/types/database";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-//   DropdownMenuLabel,
-//   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    //   DropdownMenuLabel,
+    //   DropdownMenuSeparator,
+    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import ColumnForm from "../forms/ColumnForm";
 import useFetchUserTasks from "@/hooks/useFetchUserTasks";
 import useFetchCompanyTasks from "@/hooks/useFetchCompanyTasks";
 
-type Props={
-    taskTypes:Task_types[] | null;
-    typeIdMap:Record<string, number>
-    reFetch:() => Promise<unknown>;
-    company_id?:number;
+type Props = {
+    taskTypes: Task_types[] | null;
+    typeIdMap: Record<string, number>
+    reFetch: () => Promise<unknown>;
+    company_id?: number;
 }
 
-export default function Tools({taskTypes, typeIdMap, reFetch, company_id}:Props){
-   
-    const router =useRouter();
-    const { tag }=router.query;
+export default function Tools({ taskTypes, typeIdMap, reFetch, company_id }: Props) {
+
+    const router = useRouter();
+    const { tag } = router.query;
     const userTagsCompany = useFetchCompanyTasks<Tag[]>("/api/tags/read", company_id);
     const userTagsUser = useFetchUserTasks<Tag[]>("/api/tags/read");
     const userTags = company_id ? userTagsCompany : userTagsUser;
     const [tagParams, setTagParams] = useState(tag || "All Tags")
-   
+
     const [openTaskModal, setOpenTaskModal] = useState(false);
     const [openTypeModal, setOpenTypeModal] = useState(false);
     const [openTagModal, setOpenTagModal] = useState(false);
-    
-    
-    function changeTag(event: React.ChangeEvent<HTMLSelectElement>) {    
+
+
+    function changeTag(event: React.ChangeEvent<HTMLSelectElement>) {
         const tag = event.target.value;
         router.push({
-            query:{tag:tag}
+            query: { tag: tag }
         })
         setTagParams(tag);
     }
-    
-    
 
 
 
 
-    return(
+
+
+    return (
         <div className="w-full my-5 flex items-center justify-center gap-8">
 
             <form className="">
-                <select 
-                    name="Price" 
+                <select
+                    name="Price"
                     defaultValue={tagParams} onChange={changeTag}
                     className="border-2 p-1 rounded-md bg-white"
                 >
-                    
+
                     <option value="all" >All Tags</option>
-                    { userTags?.data?.map(tag =>
+                    {userTags?.data?.map(tag =>
                         <option key={tag.tag_name} value={tag.tag_id} >{tag.tag_name}</option>
                     )}
-                        
+
                 </select>
             </form>
             <DropdownMenu>
-            <DropdownMenuTrigger 
-                className="bg-blue-500 cursor-pointer rounded-md p-1 px-3 text-white w-fit"
-            >Add New</DropdownMenuTrigger>
-            <DropdownMenuContent>
-                {/* <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuTrigger
+                    className="bg-blue-500 cursor-pointer rounded-md p-1 px-3 text-white w-fit"
+                >Add New</DropdownMenuTrigger>
+                <DropdownMenuContent>
+                    {/* <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator /> */}
-                <DropdownMenuItem><button onClick={()=>setOpenTaskModal(true )} className="w-full h-full flex items-first">Task</button></DropdownMenuItem>
-                <DropdownMenuItem><button onClick={()=>setOpenTypeModal(true )} className="w-full h-full flex items-first">Task Type</button></DropdownMenuItem>
-                <DropdownMenuItem><button onClick={()=>setOpenTagModal(true )} className="w-full h-full flex items-first">Task Tag</button></DropdownMenuItem>
-            </DropdownMenuContent>
+                    <DropdownMenuItem><button onClick={() => setOpenTaskModal(true)} className="w-full h-full flex items-first">Task</button></DropdownMenuItem>
+                    <DropdownMenuItem><button onClick={() => setOpenTypeModal(true)} className="w-full h-full flex items-first">Task Type</button></DropdownMenuItem>
+                    <DropdownMenuItem><button onClick={() => setOpenTagModal(true)} className="w-full h-full flex items-first">Task Tag</button></DropdownMenuItem>
+                </DropdownMenuContent>
             </DropdownMenu>
 
             <Modal open={openTaskModal} setOpen={setOpenTaskModal} title={"Add New Task"}>
-                <TaskForm taskTypes={taskTypes} typeIdMap={typeIdMap} userTags={userTags?.data} company_id={company_id}/>
+                <TaskForm taskTypes={taskTypes} typeIdMap={typeIdMap} userTags={userTags?.data} company_id={company_id} />
             </Modal>
             <Modal open={openTypeModal} setOpen={setOpenTypeModal} title={"Add New Type"} >
-                <ColumnForm idx={taskTypes?.length} refetch={reFetch} setOpen={setOpenTypeModal} company_id={company_id}/>
+                <ColumnForm idx={taskTypes?.length} refetch={reFetch} setOpen={setOpenTypeModal} company_id={company_id} />
             </Modal>
             <Modal open={openTagModal} setOpen={setOpenTagModal} title={"Add New Tag"} >
-                <TagForm company_id={company_id} reFetch={userTags.reFetch} setOpen={setOpenTagModal}/>
+                <TagForm company_id={company_id} reFetch={userTags.reFetch} setOpen={setOpenTagModal} />
             </Modal>
         </div>
 
