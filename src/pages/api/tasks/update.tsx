@@ -50,7 +50,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
     emitExceptSender({
       socketId:socketId,
       event: "task-updated",
-      data:updatedTask
+      data:{}
     });
     
 

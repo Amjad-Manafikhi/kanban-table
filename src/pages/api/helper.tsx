@@ -10,7 +10,13 @@ type Props = {
   }|{
     activeId:string;
     overId:string;
-  }|Task | Task_types
+  }|Task | Task_types | 
+  {
+    [k: string]: {
+        type_id: string;
+        idx: number;
+    };
+}
 
 }
 const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3001/"
@@ -19,7 +25,7 @@ const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3001/
   export async function emitExceptSender({ socketId, event, data }: Props) {
   // const res = await fetch("http://localhost:3001/")
   // const data2=await res.json();
-
+    console.log(event);
   const res = await fetch(SOCKET_URL, {
     method: 'PUT',
     headers: {

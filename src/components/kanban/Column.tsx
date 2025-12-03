@@ -96,4 +96,4 @@ type Props = {
 }
 
      
-export default React.memo(Column);
+export default (Column);

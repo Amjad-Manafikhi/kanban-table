@@ -122,11 +122,9 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
 
         return typeIdCountMap;
     }
-
     const typeIdMap = countTypeIds(tasks);
 
 
-     
 
 
 
@@ -142,26 +140,8 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
 
 
   // 🔹 Task updated
-  socket.on("task-updated", (task:Task) => {
-      
-      const prevTask = tasks?.find(t => t.task_id === task.task_id);
-      if (!prevTask?.idx) return;
-
-    const modifier = task.idx < prevTask.idx ? 1 : -1;
-    tasksSetState(prev => ({
-      ...prev,
-      data: prev.data
-        ? prev.data.map(t =>
-            t.task_id === task.task_id
-              ? task
-              : (t.type_id === task.type_id &&
-                ((t.idx > prevTask.idx && t.idx <= task.idx) ||
-                  (t.idx < prevTask.idx && t.idx >= task.idx)))
-              ? { ...t, idx: t.idx + modifier }
-              : t
-          )
-        : prev.data,
-    }));
+  socket.on("task-updated", () => {
+    tasksReFetch();
   });
 
   // 🔹 Task created
@@ -241,18 +221,19 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
 }, [socket, socketId, setEditingSpecs, setState, taskTypes, tasks, tasksSetState]);
 
     const { tag } = router.query
-    const filteredTasks = useMemo(() => {
-    return tag === "all" || tag === undefined
-        ? tasks
+    const filteredTasks =  tag === "all" || tag === undefined
+        ? (tasks ? [...tasks] : tasks)
         : tasks?.filter(task => task.tag_id === tag);
-    }, [tasks, tag]);
+    
 
-    const taskTypeMap = useMemo(() => {
-    return filteredTasks?.reduce((acc, task) => {
+    const taskTypeMap =  filteredTasks?.reduce(
+    (acc, task) => {
         acc[task.task_id] = task.type_id;
         return acc;
-    }, {} as Record<string, string>);
-    }, [filteredTasks]);
+    },
+    {} as Record<string, string>
+    );
+    
 
     return (
         <>
@@ -381,38 +362,43 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
                 if (taskTypes !== null && oldIndex !== undefined && newIndex !== undefined) setState((prev) => ({ ...prev, data: prev.data ? arrayMove(prev.data, oldIndex, newIndex) : prev.data }));
 
                 if (typeof over.id === "string") {
-                    const updated = await updateColumns(updatedColumns, active.id, over.id);
+                    await updateColumns(updatedColumns, active.id, over.id);
                     
                 }
             }
             else {
                 if (!rows) return
-                const newColumn = String(over.id)[0] === 't' ? tasks?.find((item) => item.task_id === over.id)?.type_id ?? undefined : over.id;;
-                if (!newColumn) return;
-                const oldIndex = rows[newColumn].findIndex((i) => i.id === active.id);
-                const newIndex = rows[newColumn].findIndex((i) => i.id === over.id);
-                const newRows = arrayMove(rows[newColumn], oldIndex, newIndex);
-                setRows(prev => ({ ...prev, [newColumn]: newRows }));
-                if (tasks !== null) {
-                    const taskMap = new Map(tasks.map(t => [t.task_id, t]));
+                if( String(over.id)[0] === 't'){
+                    const newColumn = tasks?.find((item) => item.task_id === over.id)?.type_id ?? undefined;
+                    if (!newColumn) return;
+                    const oldIndex = rows[newColumn].findIndex((i) => i.id === active.id);
+                    const newIndex = rows[newColumn].findIndex((i) => i.id === over.id);
+                    const newRows = arrayMove(rows[newColumn], oldIndex, newIndex);
+                    setRows(prev => ({ ...prev, [newColumn]: newRows }));
+                    if (tasks !== null) {
+                        const taskMap = new Map(tasks.map(t => [t.task_id, t]));
 
-                    const reorderedTasks = newRows
-                        .map(row => taskMap.get(row.id))
-                        .filter((task): task is Task => !!task && task.type_id === newColumn);
+                        const reorderedTasks = newRows
+                            .map(row => taskMap.get(row.id))
+                            .filter((task): task is Task => !!task && task.type_id === newColumn);
 
-                    tasksSetState(prev => ({
-                        ...prev,
-                        data: prev.data
-                            ? [
-                                // keep all tasks not in this column
-                                ...prev.data.filter(t => t.type_id !== newColumn),
-                                // add reordered tasks for this column
-                                ...reorderedTasks
-                            ]
-                            : reorderedTasks,
-                    }));
+                        tasksSetState(prev => ({
+                            ...prev,
+                            data: prev.data
+                                ? [
+                                    // keep all tasks not in this column
+                                    ...prev.data.filter(t => t.type_id !== newColumn),
+                                    // add reordered tasks for this column
+                                    ...reorderedTasks
+                                ]
+                                : reorderedTasks,
+                        }));
+                    }
+                    await updateRows(newRows, String(newColumn), String(active.id));
                 }
-                await updateRows(newRows, String(newColumn), String(active.id));
+                else if(String(over.id)[0] === 'c'){
+                    await updateRows([{id:String(active.id)}], String(over.id), String(active.id));
+                }
 
                 tasksReFetch();
             }
@@ -424,13 +410,14 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
         if (editingSpecs) return;
         const { active, over } = event;
         if (!over) return;
+        if(over.id===active.id)return;
         if (typeof (active.id) === 'string' && active.id[0] === 'c') return;
 
         if (typeof (over.id) === "string" && over.id[0] === 'c') {
+            updateRows([{ id: String(active.id) }], String(over.id), String(active.id));
             tasksSetState(prev => {
                 if (!prev?.data) return prev;
             
-                updateRows([{ id: String(active.id) }], String(over.id), String(active.id));
                 const index = prev.data.findIndex((t: Task) => t.task_id === active?.id);
                 if (index === -1) return prev;
 
@@ -451,10 +438,10 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
             const activeId = taskTypeMap?.[active.id];
             if(overId === activeId) return
             
+           // updateRows([{ id: String(active.id) }], String(overId), String(active.id));
             tasksSetState(prev => {
                 if (!prev?.data) return prev;
                 
-                updateRows([{ id: String(active.id) }], String(overId), String(active.id));
 
                 const index = prev.data.findIndex((t: Task) => t.task_id === active?.id);
                 if (index === -1) return prev;

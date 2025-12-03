@@ -49,6 +49,7 @@ type Props = {
     }
 
       const transparent = !dragged && clicking === task.task_id 
+
     return (
 
         <div 
@@ -80,4 +81,4 @@ type Props = {
     )
 }
 
-export default  (TaskRow);
+export default (TaskRow);
