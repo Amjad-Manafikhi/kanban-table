@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import {
     DndContext,
     rectIntersection,
@@ -218,7 +218,7 @@ export default function KanbanTable({ userTasks, userTaskTypes, updateColumns, u
             socket.off("task-text-updated");
             socket.off("column-text-updated");
         };
-    }, [socket, socketId, setEditingSpecs, setState, taskTypes, tasks, tasksSetState]);
+    }, [socket, socketId, setEditingSpecs, setState, taskTypes, tasks, tasksSetState, tasksReFetch]);
 
     const { tag } = router.query
     const filteredTasks = tag === "all" || tag === undefined

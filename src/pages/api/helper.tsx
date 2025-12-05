@@ -1,5 +1,4 @@
 import { Task, Task_types } from "@/types/database";
-import { DefaultEventsMap, Server } from "socket.io";
 
 type Props = {
   socketId: string;
@@ -26,17 +25,29 @@ export async function emitExceptSender({ socketId, event, data }: Props) {
   // const res = await fetch("http://localhost:3001/")
   // const data2=await res.json();
   console.log(event);
-  const res = await fetch(SOCKET_URL, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      socketId,
-      event,
-      data,
-    }),
-  });
+  try {
+
+    const res = await fetch(SOCKET_URL, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        socketId,
+        event,
+        data,
+      }),
+    });
+
+
+    if (res.ok) {
+        console.log('update sent to server');
+    } else {
+        console.error('failed to send updates to server');
+    }
+  }catch(error){
+    console.error(`Error updating for users in real time:`, error);
+  }
 
 
   // console.log("emitExceptSender called with socketId:", socketId);

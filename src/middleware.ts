@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { decrypt } from "./lib/session";
-import { parse } from "cookie";
 
 const protectedRoutes = ["/", "/companies"]
 const publicRoutes = ["/login", "/signup"];

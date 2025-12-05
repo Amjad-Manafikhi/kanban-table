@@ -81,7 +81,7 @@ export function useMouseShare(userId: number|undefined) {
       window.removeEventListener("mousemove", handleMouseMove);
       // Do NOT disconnect socket here; keep it global
     };
-  }, [userId, firstName]);
+  }, [userId, firstName, otherCursors]);
 
   return { otherCursors };
 }

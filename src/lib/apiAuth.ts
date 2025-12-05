@@ -1,4 +1,3 @@
-import { cookies } from 'next/headers'
 import { decrypt } from "./session";
 import { NextApiRequest } from 'next';
 import { parse } from 'cookie';

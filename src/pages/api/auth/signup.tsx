@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { signup } from '@/lib/auth';
-import { createSession, decrypt } from '@/lib/session';
-import { parse } from 'cookie';
+import { createSession } from '@/lib/session';
+
 import { v4 as uuidv4 } from 'uuid';
 import { query } from '@/lib/db';
 

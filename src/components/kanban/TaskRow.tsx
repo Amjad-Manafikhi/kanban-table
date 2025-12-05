@@ -1,7 +1,7 @@
 import { Task } from "@/types/database";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from '@dnd-kit/utilities';
-import React, { useState } from "react";
+import React from "react";
 import UpdateText from './UpdateText';
 import { useEditingContext } from "@/contexts/EditingContext";
 import { GripVertical } from "lucide-react";

@@ -30,7 +30,7 @@ export async function decrypt(token: string): Promise<SessionPayload | null> {
     });
     return payload as SessionPayload;
   } catch(error) {
-    console.log("failed to verify session");
+    console.log("failed to verify session",error);
     return null;
   }
 }

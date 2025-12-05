@@ -3,7 +3,7 @@ export type User = {
     firstName: string;
     secondName: string;
     email: string;
-    color:String;
+    color:string;
 }
 
 export type Company = {
